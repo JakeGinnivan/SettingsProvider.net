@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 11
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsProviderNet", "SettingsProviderNet\SettingsProviderNet.csproj", "{024DC2A7-BBFF-4B2C-8995-0081D0E4CB4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsProviderNet.Tests", "SettingsProviderNet.Tests\SettingsProviderNet.Tests.csproj", "{4E3008F5-67B1-438A-B23D-5170217F2FFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{024DC2A7-BBFF-4B2C-8995-0081D0E4CB4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{024DC2A7-BBFF-4B2C-8995-0081D0E4CB4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{024DC2A7-BBFF-4B2C-8995-0081D0E4CB4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{024DC2A7-BBFF-4B2C-8995-0081D0E4CB4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
