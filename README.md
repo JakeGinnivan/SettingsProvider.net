@@ -1,32 +1,32 @@
 # SettingsProvider.NET
-The aim of settings provider is to quickly give you a simple way to store application settings.
+The aim of settings provider is to quickly give you a simple way to store application settings. It only supports simple types, but is very flexible and makes it easy to store the settings values in plain text in a database (OOTB serialises to JSON in isolated storage)  
 
 ## Usage
 
 Start of by creating your settings class, marking up with metadata
 
     public class MySettings
-	{
-	    [DefaultValue("Jake")]
+    {
+        [DefaultValue("Jake")]
         [DisplayName("Your Name")]
         public string Name { get; set; }
 
-		[DefaultValue(true)]
-		[Description("Should Some App Remember your name?")]
-		public bool RememberMe { get;set; }
-	}
+        [DefaultValue(true)]
+        [Description("Should Some App Remember your name?")]
+        public bool RememberMe { get;set; }
+    }
 
 ### Reading Settings
 
     var settingsProvider = new SettingsProvider(); //By default uses IsolatedStorage for storage
-	var mySettings = settingsProvider.Load<MySettings>();
-	Assert.True(mySettings.RememberMe); 
+    var mySettings = settingsProvider.Load<MySettings>();
+    Assert.True(mySettings.RememberMe); 
 
 ### Saving Settings
 
     var settingsProvider = new SettingsProvider(); //By default uses IsolatedStorage for storage
-	var mySettings = new MySettings { Name = "Mr Ginnivan" };
-	settingsProvider.Save(mySettings);
+    var mySettings = new MySettings { Name = "Mr Ginnivan" };
+    settingsProvider.Save(mySettings);
 
 ### Settings MetaData
 This is handy if you want to generate a UI for your settings
