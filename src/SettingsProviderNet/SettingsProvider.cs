@@ -9,7 +9,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Xml;
 
 namespace SettingsProviderNet
 {
@@ -75,14 +74,13 @@ namespace SettingsProviderNet
 
             foreach (var setting in settingMetadata)
             {
-                // Initialize with default values
-                setting.Write(settings, setting.DefaultValue);
-
                 // Write over it using the stored value if exists
                 var key = GetKey<T>(setting);
                 if (settingsLookup.ContainsKey(key))
-                {
                     setting.Write(settings, ConvertValue(settingsLookup[key], setting));
+                else
+                {
+                    setting.Write(settings, setting.DefaultValue ?? ConvertValue(null, setting));                    
                 }
             }
 
@@ -101,12 +99,13 @@ namespace SettingsProviderNet
 
         static object ConvertValue(string storedValue, Type underlyingType)
         {
-            if (storedValue == null) return null;
             if (underlyingType == typeof (string)) return storedValue;
-            if (underlyingType != typeof (string) && string.IsNullOrEmpty(storedValue)) return null;
+            var isList = IsList(underlyingType);
+            if (isList && string.IsNullOrEmpty(storedValue)) return CreateListInstance(underlyingType);
+            if (underlyingType != typeof(string) && string.IsNullOrEmpty(storedValue)) return null;
             if (underlyingType.IsEnum) return Enum.Parse(underlyingType, storedValue, false);
             if (underlyingType == typeof (Guid)) return Guid.Parse(storedValue);
-            if (IsList(underlyingType)) return ReadList(storedValue, underlyingType);
+            if (isList) return ReadList(storedValue, underlyingType);
 
             object converted;
             try
@@ -128,7 +127,7 @@ namespace SettingsProviderNet
         private static object ReadList(string storedValue, Type propertyType)
         {
             var listItemType = propertyType.GetGenericArguments()[0];
-            var list = Activator.CreateInstance(propertyType);
+            var list = CreateListInstance(propertyType);
             var listInterface = (IList) list;
 
             var valueList = (List<string>) new DataContractJsonSerializer(typeof (List<string>))
@@ -142,9 +141,16 @@ namespace SettingsProviderNet
             return list;
         }
 
+        private static object CreateListInstance(Type propertyType)
+        {
+            return Activator.CreateInstance(propertyType.IsClass ? propertyType : typeof(List<>).MakeGenericType(propertyType.GetGenericArguments()[0]));
+        }
+
         private static bool IsList(Type propertyType)
         {
-            return propertyType.IsGenericType && typeof(IList).IsAssignableFrom(propertyType.GetGenericTypeDefinition());
+            return 
+                typeof(IList).IsAssignableFrom(propertyType) || 
+                (propertyType.IsGenericType && typeof(IList<>) == propertyType.GetGenericTypeDefinition());
         }
 
         public void SaveSettings<T>(T settingsToSave)

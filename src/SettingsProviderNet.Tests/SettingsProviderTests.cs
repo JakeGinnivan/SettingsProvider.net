@@ -217,6 +217,48 @@ namespace SettingsProviderNet.Tests
             Assert.Equal(MyEnum.Value2, settings.SomeEnum);
         }
 
+        [Fact]
+        public void settings_provider_defaults_to_empty_ilist()
+        {
+            // arrange
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // act
+
+            // assert
+            Assert.NotNull(settings.IdList);
+            Assert.IsType<List<Guid>>(settings.IdList);
+            Assert.Empty(settings.IdList);
+        }
+
+        [Fact]
+        public void settings_provider_defaults_to_empty_list()
+        {
+            // arrange
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // act
+
+            // assert
+            Assert.NotNull(settings.List2);
+            Assert.IsType<List<int>>(settings.List2);
+            Assert.Empty(settings.List2);
+        }
+
+        [Fact]
+        public void settings_provider_can_retreive_list_guids()
+        {
+            // arrange
+            var newGuid = Guid.NewGuid();
+            settingsSaver.SaveSettings(new TestSettings { IdList = new List<Guid>{newGuid}});
+
+            // act
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Equal(newGuid, settings.IdList.Single());
+        }
+
         public class TestSettings
         {
             [DefaultValue("foo")]
@@ -233,6 +275,8 @@ namespace SettingsProviderNet.Tests
             public List<string> List { get; set; }
 
             public List<int> List2 { get; set; }
+
+            public IList<Guid> IdList { get; set; }
 
             public class ComplexType
             {
