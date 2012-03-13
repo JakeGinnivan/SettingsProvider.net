@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>SettingsProvider.net</id>
-    <version>1.0.0</version>
-    <title>SettingsProvider.net</title>
+    <id>SettingsProviderNet</id>
+    <version>1.1.0</version>
+    <title>SettingsProviderNet</title>
     <authors>Jake Ginnivan</authors>
     <owners>Jake Ginnivan</owners>
     <projectUrl>https://github.com/JakeGinnivan/SettingsProvider.net</projectUrl>
@@ -11,5 +11,6 @@
     <description>Inspired by FunnelWeb's settings provider, SettingsProvider.net lets you create Poco's which store your application settings with the ability to define defaults and metadata.</description>
     <copyright>Copyright Jake Ginnivan 2012</copyright>
     <tags>Settings IsolatedStorage</tags>
+    <releaseNotes>1.1 includes List support</releaseNotes>
   </metadata>
 </package>

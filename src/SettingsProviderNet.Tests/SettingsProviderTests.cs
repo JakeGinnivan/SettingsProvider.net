@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using NSubstitute;
 using Xunit;
 
@@ -48,6 +49,34 @@ namespace SettingsProviderNet.Tests
 
             // assert
             Assert.Equal(settings.TestProp2, Convert.ToInt32(backingStore[key]));
+        }
+
+        [Fact]
+        public void settings_provider_can_persist_list()
+        {
+            // arrange
+            var settings = new TestSettings { List = new List<string>{"Testing", "Testing2"} };
+            var settingDescriptor = new SettingsProvider.SettingDescriptor(typeof(TestSettings).GetProperty("List"));
+            var key = SettingsProvider.GetKey<TestSettings>(settingDescriptor);
+
+            // act
+            settingsSaver.SaveSettings(settings);
+
+            // assert
+            Assert.Equal("[\"Testing\",\"Testing2\"]", backingStore[key]);
+        }
+
+        [Fact]
+        public void settings_provider_can_retreive_list()
+        {
+            // arrange
+            settingsSaver.SaveSettings(new TestSettings { List2 = new List<int>{123} });
+
+            // act
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Equal(123, settings.List2.Single());
         }
 
         [Fact]
@@ -200,6 +229,10 @@ namespace SettingsProviderNet.Tests
             public DateTime? FirstRun { get; set; }
 
             public ComplexType Complex { get { return new ComplexType(); } }
+
+            public List<string> List { get; set; }
+
+            public List<int> List2 { get; set; }
 
             public class ComplexType
             {

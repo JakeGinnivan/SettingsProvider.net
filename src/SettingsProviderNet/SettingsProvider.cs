@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -7,6 +8,8 @@ using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Xml;
 
 namespace SettingsProviderNet
 {
@@ -93,15 +96,22 @@ namespace SettingsProviderNet
 
         static object ConvertValue(string storedValue, SettingDescriptor setting)
         {
+            return ConvertValue(storedValue, setting.UnderlyingType);
+        }
+
+        static object ConvertValue(string storedValue, Type underlyingType)
+        {
             if (storedValue == null) return null;
-            if (setting.UnderlyingType == typeof(string)) return storedValue;
-            if (setting.UnderlyingType != typeof(string) && string.IsNullOrEmpty(storedValue)) return null;
-            if (setting.UnderlyingType.IsEnum) return Enum.Parse(setting.UnderlyingType, storedValue, false);
+            if (underlyingType == typeof (string)) return storedValue;
+            if (underlyingType != typeof (string) && string.IsNullOrEmpty(storedValue)) return null;
+            if (underlyingType.IsEnum) return Enum.Parse(underlyingType, storedValue, false);
+            if (underlyingType == typeof (Guid)) return Guid.Parse(storedValue);
+            if (IsList(underlyingType)) return ReadList(storedValue, underlyingType);
 
             object converted;
             try
             {
-                converted = Convert.ChangeType(storedValue, setting.UnderlyingType, CultureInfo.InvariantCulture);
+                converted = Convert.ChangeType(storedValue, underlyingType, CultureInfo.InvariantCulture);
             }
             catch (InvalidCastException ex)
             {
@@ -115,6 +125,28 @@ namespace SettingsProviderNet
             return converted;
         }
 
+        private static object ReadList(string storedValue, Type propertyType)
+        {
+            var listItemType = propertyType.GetGenericArguments()[0];
+            var list = Activator.CreateInstance(propertyType);
+            var listInterface = (IList) list;
+
+            var valueList = (List<string>) new DataContractJsonSerializer(typeof (List<string>))
+                                               .ReadObject(new MemoryStream(Encoding.Default.GetBytes(storedValue)));
+
+            foreach (var value in valueList)
+            {
+                listInterface.Add(ConvertValue(value, listItemType));
+            }
+
+            return list;
+        }
+
+        private static bool IsList(Type propertyType)
+        {
+            return propertyType.IsGenericType && typeof(IList).IsAssignableFrom(propertyType.GetGenericTypeDefinition());
+        }
+
         public void SaveSettings<T>(T settingsToSave)
         {
             var settings = new Dictionary<string, string>();
@@ -125,9 +157,27 @@ namespace SettingsProviderNet
                 var value = setting.ReadValue(settingsToSave) ?? setting.DefaultValue;
                 if (value == null && setting.UnderlyingType.IsEnum)
                     value = Enum.GetValues(setting.UnderlyingType).Cast<object>().First();
-                settings[GetKey<T>(setting)] = Convert.ToString(value ?? string.Empty, CultureInfo.InvariantCulture);
+                if (IsList(setting.UnderlyingType) && value != null)
+                    settings[GetKey<T>(setting)] = WriteList(value);
+                else
+                    settings[GetKey<T>(setting)] = Convert.ToString(value ?? string.Empty, CultureInfo.InvariantCulture);
             }
             settingsRepository.Save(FileKey<T>(), settings);
+        }
+
+        private string WriteList(object value)
+        {
+            var list = (
+                from object item in (IList) value 
+                select Convert.ToString(item ?? string.Empty, CultureInfo.CurrentCulture))
+                .ToList();
+
+            var ms = new MemoryStream();
+            var writer = JsonReaderWriterFactory.CreateJsonWriter(ms);
+            new DataContractJsonSerializer(typeof(List<string>)).WriteObject(ms, list);
+            writer.Flush();
+            var jsonString = Encoding.Default.GetString(ms.ToArray());
+            return jsonString;
         }
 
         internal static string GetKey<T>(SettingDescriptor setting)
