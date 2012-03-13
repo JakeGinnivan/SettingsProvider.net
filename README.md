@@ -47,7 +47,8 @@ This is handy if you want to generate a UI for your settings
 
 To improve upgradability and make SettingsProvider.net resilient to changes, we serialise everything to a string, this means we support the following types:
 
-Types supported by Convert.ChangeType - see http://msdn.microsoft.com/en-us/library/dtb69x08.aspx  
+Types supported by Convert.ChangeType plus a few others - see http://msdn.microsoft.com/en-us/library/dtb69x08.aspx  
+
  - Guid
  - SByte   
  - Int16  
@@ -64,7 +65,7 @@ Types supported by Convert.ChangeType - see http://msdn.microsoft.com/en-us/libr
  - Char  
  - String  
   
-DateTime  
-Enums  
-Nullable<T> where T is any of the types above
-List<T> where T is any of the types above
+ - DateTime  
+ - Enums  
+ - Nullable<T> where T is any of the types above
+ - List<T> where T is any of the types above
