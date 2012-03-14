@@ -15,7 +15,13 @@ namespace SettingsProviderNet
     // ReSharper disable InconsistentNaming
     public interface ISettingsProvider
     {
-        T GetSettings<T>() where T : new();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="freshCopy">If true, does not fetch from cache (useful for isolated editing)</param>
+        /// <returns></returns>
+        T GetSettings<T>(bool freshCopy = false) where T : new();
         void SaveSettings<T>(T settings);
         IEnumerable<SettingsProvider.SettingDescriptor> ReadSettingMetadata<T>();
         IEnumerable<SettingsProvider.SettingDescriptor> ReadSettingMetadata(Type settingsType);
@@ -61,14 +67,19 @@ namespace SettingsProviderNet
     {
         const string NotConvertableMessage = "Settings provider only supports types that Convert.ChangeType supports. See http://msdn.microsoft.com/en-us/library/dtb69x08.aspx";
         readonly ISettingsStorage settingsRepository;
+        readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
 
         public SettingsProvider(ISettingsStorage settingsRepository = null)
         {
             this.settingsRepository = settingsRepository ?? new IsolatedStorageSettingsStore();
         }
 
-        public T GetSettings<T>() where T : new()
+        public T GetSettings<T>(bool fresh = false) where T : new()
         {
+            var type = typeof (T);
+            if (!fresh && cache.ContainsKey(type))
+                return (T)cache[type];
+
             var settingsLookup = settingsRepository.Load(FileKey<T>());
             var settings = new T();
             var settingMetadata = ReadSettingMetadata<T>();
@@ -84,6 +95,8 @@ namespace SettingsProviderNet
                     setting.Write(settings, setting.DefaultValue ?? ConvertValue(null, setting));
                 }
             }
+
+            cache[typeof(T)] = settings;
 
             return settings;
         }
@@ -156,6 +169,8 @@ namespace SettingsProviderNet
 
         public void SaveSettings<T>(T settingsToSave)
         {
+            cache[typeof (T)] = settingsToSave;
+
             var settings = new Dictionary<string, string>();
             var settingsMetadata = ReadSettingMetadata<T>();
 
@@ -211,6 +226,9 @@ namespace SettingsProviderNet
         {
             settingsRepository.Save(FileKey<T>(), new Dictionary<string, string>());
 
+            var type = typeof (T);
+            if (cache.ContainsKey(type))
+                cache.Remove(type);
             return GetSettings<T>();
         }
 
@@ -271,7 +289,9 @@ namespace SettingsProviderNet
                 return property.GetValue(settings, null);
             }
 
+#pragma warning disable 67
             public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore 67
         }
     }
     // ReSharper restore InconsistentNaming
