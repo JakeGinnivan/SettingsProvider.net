@@ -96,7 +96,7 @@ namespace SettingsProviderNet.Tests
         public void settings_provider_can_persist_string()
         {
             // arrange
-            var settings = new TestSettings { TestProp1 = "foo" };
+            var settings = new TestSettings { TestProp1 = "bar" };
             var settingDescriptor = new SettingsProvider.SettingDescriptor(typeof(TestSettings).GetProperty("TestProp1"));
             var key = SettingsProvider.GetKey<TestSettings>(settingDescriptor);
 
@@ -111,13 +111,13 @@ namespace SettingsProviderNet.Tests
         public void settings_provider_can_retreive_string()
         {
             // arrange
-            settingsSaver.SaveSettings(new TestSettings { TestProp1 = "foo" });
+            settingsSaver.SaveSettings(new TestSettings { TestProp1 = "bar" });
 
             // act
             var settings = settingsRetreiver.GetSettings<TestSettings>();
 
             // assert
-            Assert.Equal("foo", settings.TestProp1);
+            Assert.Equal("bar", settings.TestProp1);
         }
 
         [Fact]
@@ -218,6 +218,20 @@ namespace SettingsProviderNet.Tests
         }
 
         [Fact]
+        public void settings_provider_can_reset_to_defaults()
+        {
+            // arrange
+            settingsSaver.SaveSettings(new TestSettings { TestProp1 = "bar" });
+
+            // act
+            settingsRetreiver.ResetToDefaults<TestSettings>();
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Equal("foo", settings.TestProp1);
+        }
+
+        [Fact]
         public void settings_provider_defaults_to_empty_ilist()
         {
             // arrange
@@ -243,20 +257,6 @@ namespace SettingsProviderNet.Tests
             Assert.NotNull(settings.List2);
             Assert.IsType<List<int>>(settings.List2);
             Assert.Empty(settings.List2);
-        }
-
-        [Fact]
-        public void settings_provider_can_retreive_list_guids()
-        {
-            // arrange
-            var newGuid = Guid.NewGuid();
-            settingsSaver.SaveSettings(new TestSettings { IdList = new List<Guid>{newGuid}});
-
-            // act
-            var settings = settingsRetreiver.GetSettings<TestSettings>();
-
-            // assert
-            Assert.Equal(newGuid, settings.IdList.Single());
         }
 
         public class TestSettings

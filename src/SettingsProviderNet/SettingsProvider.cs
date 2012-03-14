@@ -19,6 +19,7 @@ namespace SettingsProviderNet
         void SaveSettings<T>(T settings);
         IEnumerable<SettingsProvider.SettingDescriptor> ReadSettingMetadata<T>();
         IEnumerable<SettingsProvider.SettingDescriptor> ReadSettingMetadata(Type settingsType);
+        T ResetToDefaults<T>() where T : new();
     }
 
     public interface ISettingsStorage
@@ -80,7 +81,7 @@ namespace SettingsProviderNet
                     setting.Write(settings, ConvertValue(settingsLookup[key], setting));
                 else
                 {
-                    setting.Write(settings, setting.DefaultValue ?? ConvertValue(null, setting));                    
+                    setting.Write(settings, setting.DefaultValue ?? ConvertValue(null, setting));
                 }
             }
 
@@ -99,12 +100,12 @@ namespace SettingsProviderNet
 
         static object ConvertValue(string storedValue, Type underlyingType)
         {
-            if (underlyingType == typeof (string)) return storedValue;
+            if (underlyingType == typeof(string)) return storedValue;
             var isList = IsList(underlyingType);
             if (isList && string.IsNullOrEmpty(storedValue)) return CreateListInstance(underlyingType);
             if (underlyingType != typeof(string) && string.IsNullOrEmpty(storedValue)) return null;
             if (underlyingType.IsEnum) return Enum.Parse(underlyingType, storedValue, false);
-            if (underlyingType == typeof (Guid)) return Guid.Parse(storedValue);
+            if (underlyingType == typeof(Guid)) return Guid.Parse(storedValue);
             if (isList) return ReadList(storedValue, underlyingType);
 
             object converted;
@@ -128,9 +129,9 @@ namespace SettingsProviderNet
         {
             var listItemType = propertyType.GetGenericArguments()[0];
             var list = CreateListInstance(propertyType);
-            var listInterface = (IList) list;
+            var listInterface = (IList)list;
 
-            var valueList = (List<string>) new DataContractJsonSerializer(typeof (List<string>))
+            var valueList = (List<string>)new DataContractJsonSerializer(typeof(List<string>))
                                                .ReadObject(new MemoryStream(Encoding.Default.GetBytes(storedValue)));
 
             foreach (var value in valueList)
@@ -148,8 +149,8 @@ namespace SettingsProviderNet
 
         private static bool IsList(Type propertyType)
         {
-            return 
-                typeof(IList).IsAssignableFrom(propertyType) || 
+            return
+                typeof(IList).IsAssignableFrom(propertyType) ||
                 (propertyType.IsGenericType && typeof(IList<>) == propertyType.GetGenericTypeDefinition());
         }
 
@@ -174,7 +175,7 @@ namespace SettingsProviderNet
         private string WriteList(object value)
         {
             var list = (
-                from object item in (IList) value 
+                from object item in (IList)value
                 select Convert.ToString(item ?? string.Empty, CultureInfo.CurrentCulture))
                 .ToList();
 
@@ -204,6 +205,13 @@ namespace SettingsProviderNet
                 .Where(x => x.CanRead && x.CanWrite)
                 .Select(x => new SettingDescriptor(x))
                 .ToArray();
+        }
+
+        public T ResetToDefaults<T>() where T : new()
+        {
+            settingsRepository.Save(FileKey<T>(), new Dictionary<string, string>());
+
+            return GetSettings<T>();
         }
 
         public class SettingDescriptor : INotifyPropertyChanged
