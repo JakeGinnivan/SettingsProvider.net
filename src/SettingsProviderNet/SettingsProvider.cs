@@ -88,17 +88,20 @@ namespace SettingsProviderNet
             {
                 // Write over it using the stored value if exists
                 var key = GetKey<T>(setting);
-                if (settingsLookup.ContainsKey(key))
-                    setting.Write(settings, ConvertValue(settingsLookup[key], setting));
-                else
-                {
-                    setting.Write(settings, setting.DefaultValue ?? ConvertValue(null, setting));
-                }
+                var value = settingsLookup.ContainsKey(key) 
+                    ? ConvertValue(settingsLookup[key], setting) 
+                    : GetDefaultValue(setting);
+                setting.Write(settings, value);
             }
 
             cache[typeof(T)] = settings;
 
             return settings;
+        }
+
+        private static object GetDefaultValue(SettingDescriptor setting)
+        {
+            return setting.DefaultValue ?? ConvertValue(null, setting);
         }
 
         static string FileKey<T>()
@@ -228,7 +231,18 @@ namespace SettingsProviderNet
 
             var type = typeof (T);
             if (cache.ContainsKey(type))
-                cache.Remove(type);
+            {
+                var cachedCopy = cache[type];
+                var settingMetadata = ReadSettingMetadata<T>();
+
+                foreach (var setting in settingMetadata)
+                {
+                    setting.Write(cachedCopy, GetDefaultValue(setting));
+                }
+
+                return (T)cachedCopy;
+            }
+
             return GetSettings<T>();
         }
 

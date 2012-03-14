@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>SettingsProviderNet</id>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <title>SettingsProviderNet</title>
     <authors>Jake Ginnivan</authors>
     <owners>Jake Ginnivan</owners>
@@ -15,7 +15,8 @@
       v1.1 - Added List and Guid support
 v1.1.1 - Lists are initialised to an empty list rather than null
 v1.2 - Added ResetToDefault method
-v1.3 - Added settings cache (returns same instance)   
+v1.3 - Added settings cache (returns same instance)
+v1.3.1 - ResetToDefault resets same cached instance
     </releaseNotes>
   </metadata>
 </package>

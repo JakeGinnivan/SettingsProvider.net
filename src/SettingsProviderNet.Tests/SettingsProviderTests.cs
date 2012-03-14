@@ -232,6 +232,35 @@ namespace SettingsProviderNet.Tests
         }
 
         [Fact]
+        public void settings_provider_recycles_same_instance_on_reset()
+        {
+            // arrange
+            var instance = settingsRetreiver.GetSettings<TestSettings>();
+            settingsSaver.SaveSettings(new TestSettings { TestProp1 = "bar" });
+
+            // act
+            var settings = settingsRetreiver.ResetToDefaults<TestSettings>();
+            var settings2 = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Same(instance, settings);
+            Assert.Same(instance, settings2);
+        }
+
+        [Fact]
+        public void settings_provider_returns_fresh_instance_when_requested()
+        {
+            // arrange
+            var instance = settingsRetreiver.GetSettings<TestSettings>();
+
+            // act
+            var instance2 = settingsRetreiver.GetSettings<TestSettings>(true);
+
+            // assert
+            Assert.NotSame(instance, instance2);
+        }
+
+        [Fact]
         public void settings_provider_defaults_to_empty_ilist()
         {
             // arrange
