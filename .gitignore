@@ -17,4 +17,5 @@ _ReSharper.*
 deploy-to-ec2*
 TestResults/
 src/NuGetBuild/
+src/NuGetBuildWp7/
 *.nupkg

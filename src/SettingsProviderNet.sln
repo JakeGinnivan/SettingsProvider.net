@@ -1,16 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsProviderNet", "SettingsProviderNet\SettingsProviderNet.csproj", "{024DC2A7-BBFF-4B2C-8995-0081D0E4CB4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsProviderNet.Tests", "SettingsProviderNet.Tests\SettingsProviderNet.Tests.csproj", "{4E3008F5-67B1-438A-B23D-5170217F2FFC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{90FB2A4E-6A58-494D-B6B1-6A11BA0B4082}"
 	ProjectSection(SolutionItems) = preProject
-		..\README.md = ..\README.md
-		NuGet.Pack.ps1 = NuGet.Pack.ps1
 		SettingsProviderNet\install.ps1 = SettingsProviderNet\install.ps1
+		NuGet.Pack.ps1 = NuGet.Pack.ps1
+		..\README.md = ..\README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsProviderWP7", "SettingsProviderWP7\SettingsProviderWP7.csproj", "{8C633280-70D7-444F-8128-C2F8E0632AFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

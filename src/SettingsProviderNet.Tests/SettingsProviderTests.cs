@@ -19,10 +19,15 @@ namespace SettingsProviderNet.Tests
         public SettingsProviderTests()
         {
             applicationSettingsStore = Substitute.For<ISettingsStorage>();
+            var store = new IsolatedStorageSettingsStore();
+            applicationSettingsStore.SerializeList(Arg.Any<List<string>>())
+                .Returns(c => store.SerializeList(c.Arg<List<string>>()));
+            applicationSettingsStore.DeserializeList(Arg.Any<string>())
+                .Returns(c => store.DeserializeList(c.Arg<string>()));
             backingStore = new Dictionary<string, string>();
-            applicationSettingsStore.Load("TestSettings.settings").Returns(backingStore);
+            applicationSettingsStore.Load("TestSettings").Returns(backingStore);
             applicationSettingsStore
-                .When(s=>s.Save("TestSettings.settings", Arg.Any<Dictionary<string, string>>()))
+                .When(s=>s.Save("TestSettings", Arg.Any<Dictionary<string, string>>()))
                 .Do(c=>
                     {
                         backingStore.Clear();
