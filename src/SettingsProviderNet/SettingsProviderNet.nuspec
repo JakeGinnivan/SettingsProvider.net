@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>SettingsProviderWp7</id>
+    <id>SettingsProviderNet</id>
     <version>1.4.0</version>
     <title>SettingsProviderNet</title>
     <authors>Jake Ginnivan</authors>

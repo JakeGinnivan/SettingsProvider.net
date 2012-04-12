@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>SettingsProviderNet</id>
+    <id>SettingsProviderWp7</id>
     <version>1.4.0</version>
-    <title>SettingsProviderNet</title>
+    <title>SettingsProviderNet for WP7</title>
     <authors>Jake Ginnivan</authors>
     <owners>Jake Ginnivan</owners>
     <projectUrl>https://github.com/JakeGinnivan/SettingsProvider.net</projectUrl>

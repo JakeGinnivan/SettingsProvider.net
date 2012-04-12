@@ -19,11 +19,11 @@ cp .\SettingsProviderNet\IsolatedStorageSettingsStore.cs $storageFile
 	Set-Content $storageFile
 
 $nuspecFile = "SettingsProviderNet.nuspec"
-cp .\SettingsProviderNet\SettingsProviderNet.nuspec "$buildRoot\$nuspecFile"
+cp .\SettingsProviderNet\$nuspecFile "$buildRoot\$nuspecFile"
 cp .\SettingsProviderNet\install.ps1 "$buildRoot\Tools\install.ps1"
 pushd $buildRoot
 
-    & $nuget pack $nuspecFile
+    & $nuget pack $nuspecFile -OutputDirectory $buildRoot\..\..\..
 
 popd
 
@@ -52,10 +52,10 @@ cp .\SettingsProviderWP7\DisplayNameAttribute.cs $dnFile
 	Set-Content $dnFile
 
 $nuspecFile = "SettingsProviderWp7.nuspec"
-cp .\SettingsProviderWP7\SettingsProviderWp7.nuspec "$buildRoot\$nuspecFile"
+cp .\SettingsProviderWP7\$nuspecFile "$buildRoot\$nuspecFile"
 cp .\SettingsProviderNet\install.ps1 "$buildRoot\Tools\install.ps1"
 pushd $buildRoot
 
-    & $nuget pack $nuspecFile
+    & $nuget pack $nuspecFile -OutputDirectory $buildRoot\..\..\..
 
 popd
