@@ -6,10 +6,36 @@ using System.Text;
 
 namespace SettingsProviderNet
 {
-    public class IsolatedStorageSettingsStore : ISettingsStorage
+    public class IsolatedStorageSettingsStore : JsonSettingsStoreBase
     {
         const IsolatedStorageScope Scope = IsolatedStorageScope.Assembly | IsolatedStorageScope.User | IsolatedStorageScope.Roaming;
 
+        protected override void WriteTextFile(string filename, string fileContents)
+        {
+            using (var isoStore = IsolatedStorageFile.GetStore(Scope, null, null))
+            {
+                using (var stream = new IsolatedStorageFileStream(filename, FileMode.Create, isoStore))
+                    new StreamWriter(stream).Write(fileContents);
+            }
+        }
+
+        protected override string ReadTextFile(string filename)
+        {
+            using (var isoStore = IsolatedStorageFile.GetStore(Scope, null, null))
+            {
+                if (isoStore.FileExists(filename))
+                {
+                    using (var stream = new IsolatedStorageFileStream(filename, FileMode.Open, isoStore))
+                        return new StreamReader(stream).ReadToEnd();
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public abstract class JsonSettingsStoreBase : ISettingsStorage
+    {
         public string SerializeList(List<string> listOfItems)
         {
             var ms = new MemoryStream();
@@ -32,29 +58,30 @@ namespace SettingsProviderNet
             var filename = key + ".settings";
 
             var serializer = new DataContractJsonSerializer(typeof(Dictionary<string, string>));
-
-            using (var isoStore = IsolatedStorageFile.GetStore(Scope, null, null))
-            {
-                using (var stream = new IsolatedStorageFileStream(filename, FileMode.Create, isoStore))
-                    serializer.WriteObject(stream, settings);
-            }
+            var ms = new MemoryStream();
+            var writer = JsonReaderWriterFactory.CreateJsonWriter(ms);
+            serializer.WriteObject(ms, settings);
+            writer.Flush();
+            var jsonString = Encoding.Default.GetString(ms.ToArray());
+            WriteTextFile(filename, jsonString);
         }
+
+        protected abstract void WriteTextFile(string filename, string fileContents);
 
         public Dictionary<string, string> Load(string key)
         {
             var filename = key + ".settings";
 
-            var serializer = new DataContractJsonSerializer(typeof(Dictionary<string, string>));
-            using (var isoStore = IsolatedStorageFile.GetStore(Scope, null, null))
+            var readTextFile = ReadTextFile(filename);
+            if (!string.IsNullOrEmpty(readTextFile))
             {
-                if (isoStore.FileExists(filename))
-                {
-                    using (var stream = new IsolatedStorageFileStream(filename, FileMode.Open, isoStore))
-                        return (Dictionary<string, string>)serializer.ReadObject(stream);
-                }
+                var serializer = new DataContractJsonSerializer(typeof(Dictionary<string, string>));
+                serializer.ReadObject(new MemoryStream(Encoding.Default.GetBytes(readTextFile)));
             }
 
             return new Dictionary<string, string>();
         }
+
+        protected abstract string ReadTextFile(string filename);
     }
 }
