@@ -12,13 +12,12 @@ namespace SettingsProviderNet.Tests
     public class SettingsProviderTests
     {
         readonly Dictionary<string, string> backingStore;
-        readonly ISettingsStorage applicationSettingsStore;
         readonly SettingsProvider settingsRetreiver;
         readonly SettingsProvider settingsSaver;
 
         public SettingsProviderTests()
         {
-            applicationSettingsStore = Substitute.For<ISettingsStorage>();
+            var applicationSettingsStore = Substitute.For<ISettingsStorage>();
             var store = new IsolatedStorageSettingsStore();
             applicationSettingsStore.SerializeList(Arg.Any<List<string>>())
                 .Returns(c => store.SerializeList(c.Arg<List<string>>()));
@@ -85,6 +84,19 @@ namespace SettingsProviderNet.Tests
         }
 
         [Fact]
+        public void settings_provider_can_retreive_list_with_japanese_characters()
+        {
+            // arrange
+            settingsSaver.SaveSettings(new TestSettings { List = new List<string> { "居酒屋" } });
+
+            // act
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Equal("居酒屋", settings.List.Single());
+        }
+
+        [Fact]
         public void settings_provider_can_retreive_int()
         {
             // arrange
@@ -102,6 +114,21 @@ namespace SettingsProviderNet.Tests
         {
             // arrange
             var settings = new TestSettings { TestProp1 = "bar" };
+            var settingDescriptor = new SettingsProvider.SettingDescriptor(typeof(TestSettings).GetProperty("TestProp1"));
+            var key = SettingsProvider.GetKey<TestSettings>(settingDescriptor);
+
+            // act
+            settingsSaver.SaveSettings(settings);
+
+            // assert
+            Assert.Equal(settings.TestProp1, backingStore[key]);
+        }
+
+        [Fact]
+        public void settings_provider_can_persist_japanese_string()
+        {
+            // arrange
+            var settings = new TestSettings { TestProp1 = "居酒屋" };
             var settingDescriptor = new SettingsProvider.SettingDescriptor(typeof(TestSettings).GetProperty("TestProp1"));
             var key = SettingsProvider.GetKey<TestSettings>(settingDescriptor);
 

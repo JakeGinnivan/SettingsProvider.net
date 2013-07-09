@@ -39,7 +39,7 @@ namespace SettingsProviderNet
         public string SerializeList(List<string> listOfItems)
         {
             var ms = new MemoryStream();
-            var writer = JsonReaderWriterFactory.CreateJsonWriter(ms);
+            var writer = JsonReaderWriterFactory.CreateJsonWriter(ms, Encoding.Unicode);
             new DataContractJsonSerializer(typeof(List<string>)).WriteObject(ms, listOfItems);
             writer.Flush();
             var jsonString = Encoding.Default.GetString(ms.ToArray());
@@ -59,7 +59,7 @@ namespace SettingsProviderNet
 
             var serializer = new DataContractJsonSerializer(typeof(Dictionary<string, string>));
             var ms = new MemoryStream();
-            var writer = JsonReaderWriterFactory.CreateJsonWriter(ms);
+            var writer = JsonReaderWriterFactory.CreateJsonWriter(ms, Encoding.Unicode);
             serializer.WriteObject(ms, settings);
             writer.Flush();
             var jsonString = Encoding.Default.GetString(ms.ToArray());
