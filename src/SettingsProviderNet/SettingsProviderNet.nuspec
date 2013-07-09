@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>SettingsProviderNet</id>
-    <version>1.6.0</version>
+    <version>1.6.1</version>
     <title>SettingsProviderNet</title>
     <authors>Jake Ginnivan</authors>
     <owners>Jake Ginnivan</owners>
@@ -19,6 +19,7 @@ v1.3.1 - ResetToDefault resets same cached instance
 v1.4 - Pulled list serialisation into the settings store and introduce SettingsProviderWp7 for Windows Phone 
 v1.5 - Created JsonSettingsStoreBase for saving settings in a custom location
 v1.6 - Added Unicode support
+v1.6.1 - Fixed issue with JsonSettingsStoreBase not working properly
     </releaseNotes>
   </metadata>
 </package>
