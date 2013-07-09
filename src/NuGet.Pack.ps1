@@ -1,4 +1,4 @@
-$nuget = ls .\packages\NuGet.CommandLine*\tools\NuGet.exe
+$nuget = ls .\.nuget\NuGet.exe
 
 $buildRoot = ".\NuGetBuild"
 $settingsProviderDestination = "$buildRoot\content\Settings"
