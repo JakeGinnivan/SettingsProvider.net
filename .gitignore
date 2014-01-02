@@ -19,3 +19,4 @@ TestResults/
 src/NuGetBuild/
 src/NuGetBuildWp7/
 *.nupkg
+README.html

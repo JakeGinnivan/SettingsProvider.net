@@ -1,20 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.20617.1 PREVIEW
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{90FB2A4E-6A58-494D-B6B1-6A11BA0B4082}"
 	ProjectSection(SolutionItems) = preProject
-		SettingsProviderNet\install.ps1 = SettingsProviderNet\install.ps1
-		NuGet.Pack.ps1 = NuGet.Pack.ps1
 		..\README.md = ..\README.md
+		..\SettingsProvider.proj = ..\SettingsProvider.proj
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsProviderNet", "SettingsProviderNet\SettingsProviderNet.csproj", "{024DC2A7-BBFF-4B2C-8995-0081D0E4CB4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsProviderNet.Tests", "SettingsProviderNet.Tests\SettingsProviderNet.Tests.csproj", "{4E3008F5-67B1-438A-B23D-5170217F2FFC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsProviderWP7", "SettingsProviderWP7\SettingsProviderWP7.csproj", "{8C633280-70D7-444F-8128-C2F8E0632AFB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F3060BB6-2CBE-4790-B7B7-DBA6D300D630}"
 	ProjectSection(SolutionItems) = preProject
@@ -49,18 +46,6 @@ Global
 		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Release|ARM.ActiveCfg = Release|Any CPU
 		{4E3008F5-67B1-438A-B23D-5170217F2FFC}.Release|x86.ActiveCfg = Release|Any CPU
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Debug|ARM.ActiveCfg = Debug|ARM
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Debug|ARM.Build.0 = Debug|ARM
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Debug|x86.ActiveCfg = Debug|x86
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Debug|x86.Build.0 = Debug|x86
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Release|ARM.ActiveCfg = Release|ARM
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Release|ARM.Build.0 = Release|ARM
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Release|x86.ActiveCfg = Release|x86
-		{8C633280-70D7-444F-8128-C2F8E0632AFB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

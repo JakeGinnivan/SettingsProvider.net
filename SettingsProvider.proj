@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Cleanup;Build;Publish" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Root>$(MSBuildProjectDirectory)\</Root>
+    <BuildPlatform Condition="$(BuildPlatform) == ''">Any CPU</BuildPlatform>
+    <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
+    <BuildOutputPath>$(Root)build\</BuildOutputPath>
+    <DropPath>$(BuildOutputPath)Artifacts\</DropPath>
+  </PropertyGroup>
+  <UsingTask AssemblyFile="$(Root)tools\xunit.net\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit"/>
+
+  <Target Name="Cleanup">
+    <Error Condition="$(Root) == ''" Text="Root variable must be defined" />
+
+    <!-- Diagnostics -->
+    <Message Text="Diagnostics:"/>
+    <Message Text="Project root:    $(Root)" />
+    <Message Text="Drop path:       $(DropPath)" />
+
+    <!-- Clean up -->
+    <ItemGroup>
+      <FilesToDelete Include="$(Root)**\bin\**\*.*" />
+      <FilesToDelete Include="$(Root)**\obj\**\*.*" />
+      <FilesToDelete Include="$(DropPath)**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
+    <RemoveDir Directories="$(DropPath)" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="Cleanup">
+    <MSBuild Projects="$(Root)src\SettingsProviderNet.sln" Properties="Configuration=$(Configuration);Platform=$(BuildPlatform)" />
+  </Target>
+
+  <Target Name="Test">
+    <xunit Assembly="$(Root)src\SettingsProviderNet.Tests\bin\$(Configuration)\SettingsProviderNet.Tests.dll" ShadowCopy="False" />
+  </Target>
+
+  <Target Name="Publish" DependsOnTargets="Test">
+    <ItemGroup>
+      <BuildOutput Include="$(Root)src\SettingsProviderNet\bin\$(Configuration)\**\*.*"/>
+    </ItemGroup>
+
+    <Copy SourceFiles="@(BuildOutput)"
+          DestinationFiles="@(BuildOutput->'$(DropPath)%(RecursiveDir)%(Filename)%(Extension)')" />
+    
+    <Exec Command="$(Root)src\.NuGet\NuGet.exe pack $(Root)src\SettingsProviderNet\SettingsProviderNet.nuspec -BasePath $(DropPath) -OutputDirectory $(BuildOutputPath)"/>
+  </Target>
+</Project>

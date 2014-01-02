@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>SettingsProviderNet</id>
-    <version>1.6.1</version>
+    <version>2.0.0</version>
     <title>SettingsProviderNet</title>
     <authors>Jake Ginnivan</authors>
     <owners>Jake Ginnivan</owners>
@@ -11,15 +11,10 @@
     <description>Inspired by FunnelWeb's settings provider, SettingsProvider.net lets you create Poco's which store your application settings with the ability to define defaults and metadata.</description>
     <copyright>Copyright Jake Ginnivan 2012</copyright>
     <tags>Settings IsolatedStorage SettingsProvider</tags>
-    <releaseNotes>v1.1 - Added List and Guid support
-v1.1.1 - Lists are initialised to an empty list rather than null
-v1.2 - Added ResetToDefault method
-v1.3 - Added settings cache (returns same instance)
-v1.3.1 - ResetToDefault resets same cached instance
-v1.4 - Pulled list serialisation into the settings store and introduce SettingsProviderWp7 for Windows Phone 
-v1.5 - Created JsonSettingsStoreBase for saving settings in a custom location
-v1.6 - Added Unicode support
-v1.6.1 - Fixed issue with JsonSettingsStoreBase not working properly
-    </releaseNotes>
+    <releaseNotes>v2.0.0 - Switch to class library</releaseNotes>
   </metadata>
+  <files>
+    <file src="SettingsProviderNet.dll" target="lib\net40" />
+    <file src="Readme.txt" target="" />
+  </files>
 </package>

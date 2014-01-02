@@ -9,28 +9,6 @@ using System.Reflection;
 namespace SettingsProviderNet
 {
     // ReSharper disable InconsistentNaming
-    public interface ISettingsProvider
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="freshCopy">If true, does not fetch from cache (useful for isolated editing)</param>
-        /// <returns></returns>
-        T GetSettings<T>(bool freshCopy = false) where T : new();
-        void SaveSettings<T>(T settings);
-        IEnumerable<SettingsProvider.SettingDescriptor> ReadSettingMetadata<T>();
-        IEnumerable<SettingsProvider.SettingDescriptor> ReadSettingMetadata(Type settingsType);
-        T ResetToDefaults<T>() where T : new();
-    }
-
-    public interface ISettingsStorage
-    {
-        string SerializeList(List<string> listOfItems);
-        List<string> DeserializeList(string serializedList);
-        void Save(string key, Dictionary<string, string> settings);
-        Dictionary<string, string> Load(string key);
-    }
 
     public class SettingsProvider : ISettingsProvider
     {
@@ -269,26 +247,6 @@ namespace SettingsProviderNet
 #pragma warning disable 67
             public event PropertyChangedEventHandler PropertyChanged;
 #pragma warning restore 67
-        }
-    }
-
-    public static class EnumHelper
-    {
-        public static IEnumerable<T> GetValues<T>()
-        {
-            return GetValues(typeof(T))
-                .OfType<T>();
-        }
-
-        public static IEnumerable<object> GetValues(Type enumType)
-        {
-            if (!enumType.IsEnum)
-                throw new ArgumentException("enumType must be an Enum type", "enumType");
-
-            return enumType
-                .GetFields()
-                .Where(field => field.IsLiteral)
-                .Select(field => field.GetValue(enumType));
         }
     }
 
