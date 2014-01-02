@@ -2,3 +2,4 @@
  - BREAKING: Changed to a class library
    - DELETE The files `Settings\SettingsProvider.cs` and `Settings\IsolatedStorageSettingsStore.cs`
    - Add `using SettingsProviderNet;` to classes which use settings provider
+ - Added: RoamingAppDataStorage (to easily save settings to app data)
