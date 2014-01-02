@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>SettingsProviderNet</id>
-    <version>2.0.0</version>
+    <version>$version$</version>
     <title>SettingsProviderNet</title>
     <authors>Jake Ginnivan</authors>
     <owners>Jake Ginnivan</owners>

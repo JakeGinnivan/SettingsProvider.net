@@ -43,6 +43,6 @@
     <Copy SourceFiles="@(BuildOutput)"
           DestinationFiles="@(BuildOutput->'$(DropPath)%(RecursiveDir)%(Filename)%(Extension)')" />
     
-    <Exec Command="$(Root)src\.NuGet\NuGet.exe pack $(Root)src\SettingsProviderNet\SettingsProviderNet.nuspec -BasePath $(DropPath) -OutputDirectory $(BuildOutputPath)"/>
+    <Exec Command="$(Root)src\.NuGet\NuGet.exe pack $(Root)src\SettingsProviderNet\SettingsProviderNet.nuspec -BasePath $(DropPath) -OutputDirectory $(BuildOutputPath) -Version $(GitHubFlowVersion_SemVer)"/>
   </Target>
 </Project>

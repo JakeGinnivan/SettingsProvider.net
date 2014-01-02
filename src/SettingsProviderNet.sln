@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{90FB2A4E-6A58-494D-B6B1-6A11BA0B4082}"
 	ProjectSection(SolutionItems) = preProject
+		..\Build.cmd = ..\Build.cmd
+		..\NextVersion.txt = ..\NextVersion.txt
 		..\README.md = ..\README.md
 		..\SettingsProvider.proj = ..\SettingsProvider.proj
 	EndProjectSection
