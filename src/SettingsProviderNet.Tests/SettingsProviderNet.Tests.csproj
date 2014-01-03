@@ -45,8 +45,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComplexType.cs" />
+    <Compile Include="MyEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsProviderTests.cs" />
+    <Compile Include="TestSettings.cs" />
+    <Compile Include="TestStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

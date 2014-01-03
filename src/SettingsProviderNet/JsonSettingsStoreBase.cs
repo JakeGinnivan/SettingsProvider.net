@@ -7,23 +7,6 @@ namespace SettingsProviderNet
 {
     public abstract class JsonSettingsStoreBase : ISettingsStorage
     {
-        public string SerializeList(List<string> listOfItems)
-        {
-            var ms = new MemoryStream();
-            var writer = JsonReaderWriterFactory.CreateJsonWriter(ms, Encoding.Unicode);
-            new DataContractJsonSerializer(typeof(List<string>)).WriteObject(ms, listOfItems);
-            writer.Flush();
-            var jsonString = Encoding.Default.GetString(ms.ToArray());
-
-            return jsonString;
-        }
-
-        public List<string> DeserializeList(string serializedList)
-        {
-            return (List<string>)new DataContractJsonSerializer(typeof(List<string>))
-                .ReadObject(new MemoryStream(Encoding.Default.GetBytes(serializedList)));
-        }
-
         public void Save(string key, Dictionary<string, string> settings)
         {
             var filename = key + ".settings";

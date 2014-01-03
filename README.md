@@ -1,5 +1,7 @@
 # SettingsProvider.NET
-The aim of settings provider is to quickly give you a simple way to store application settings. It only supports simple types, but is very flexible and makes it easy to store the settings values in plain text in a database (OOTB serialises to JSON in isolated storage)  
+The aim of settings provider is to quickly give you a simple way to store application settings and read metadata about those settings, like description, name, default values etc
+
+v2 Has added a few things to make versioning easier, the Key attribute allows you to rename properties, and types are no longer fully qualified (so you can move classes)
 
 ## Usage
 
@@ -14,8 +16,11 @@ Start of by creating your settings class, marking up with metadata
         [DefaultValue(true)]
         [Description("Should Some App Remember your name?")]
         public bool RememberMe { get;set; }
-		
-		public List<Guid> Favourites { get;set; }
+
+        public List<Guid> Favourites { get;set; }
+
+        [Key("OriginalName")]
+        public string Renamed { get; set; }
     }
 
 ### Reading Settings
@@ -43,29 +48,5 @@ This is handy if you want to generate a UI for your settings
 	// Your Name () - Jake
 	// RememberMe (Should Some App Remember your name?) - true
 
-## Limitations
-
-To improve upgradability and make SettingsProvider.net resilient to changes, we serialise everything to a string, this means we support the following types:
-
-Types supported by Convert.ChangeType plus a few others - see http://msdn.microsoft.com/en-us/library/dtb69x08.aspx  
-
- - Guid
- - SByte   
- - Int16  
- - Int32  
- - Int64  
- - Byte  
- - UInt16  
- - UInt32  
- - UInt64  
- - Single  
- - Double  
- - Decimal  
- - Boolean  
- - Char  
- - String  
-  
- - DateTime  
- - Enums  
- - Nullable<T> where T is any of the types above
- - List<T> where T is any of the types above
+### Additional Notes
+ - Nested complex types do not have the same features and simply use the `DataContractJsonSerializer` to serialise

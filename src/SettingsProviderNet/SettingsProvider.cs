@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace SettingsProviderNet
 {
@@ -12,7 +15,6 @@ namespace SettingsProviderNet
 
     public class SettingsProvider : ISettingsProvider
     {
-        const string NotConvertableMessage = "Settings provider only supports types that Convert.ChangeType supports. See http://msdn.microsoft.com/en-us/library/dtb69x08.aspx";
         readonly ISettingsStorage settingsRepository;
         readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
 
@@ -34,10 +36,15 @@ namespace SettingsProviderNet
             foreach (var setting in settingMetadata)
             {
                 // Write over it using the stored value if exists
-                var key = GetKey<T>(setting);
-                var value = settingsLookup.ContainsKey(key) 
-                    ? ConvertValue(settingsLookup[key], setting) 
-                    : GetDefaultValue(setting);
+                var legacyKey = GetLegacyKey<T>(setting);
+                object value;
+                if (settingsLookup.ContainsKey(setting.Key)) 
+                    value = ConvertValue(settingsLookup[setting.Key], setting);
+                else if (settingsLookup.ContainsKey(legacyKey))
+                    value = ConvertValue(settingsLookup[legacyKey], setting);
+                else
+                    value = GetDefaultValue(setting);
+
                 setting.Write(settings, value);
             }
 
@@ -58,50 +65,22 @@ namespace SettingsProviderNet
 
         object ConvertValue(string storedValue, SettingDescriptor setting)
         {
-            return ConvertValue(storedValue, setting.UnderlyingType);
+            var propertyType = setting.Property.PropertyType;
+            var isList = IsList(propertyType);
+            if (isList && string.IsNullOrEmpty(storedValue)) return CreateListInstance(propertyType);
+            if (string.IsNullOrEmpty(storedValue)) return GetDefault(propertyType);
+
+            return new DataContractJsonSerializer(setting.UnderlyingType)
+                .ReadObject(new MemoryStream(Encoding.Default.GetBytes(storedValue)));
         }
 
-        object ConvertValue(string storedValue, Type underlyingType)
+        static object GetDefault(Type type)
         {
-            if (underlyingType == typeof(string)) return storedValue;
-            var isList = IsList(underlyingType);
-            if (isList && string.IsNullOrEmpty(storedValue)) return CreateListInstance(underlyingType);
-            if (underlyingType != typeof(string) && string.IsNullOrEmpty(storedValue)) return null;
-            if (underlyingType.IsEnum) return Enum.Parse(underlyingType, storedValue, false);
-            if (underlyingType == typeof(Guid)) return Guid.Parse(storedValue);
-            if (isList) return ReadList(storedValue, underlyingType);
-
-            object converted;
-            try
+            if (type.IsValueType)
             {
-                converted = Convert.ChangeType(storedValue, underlyingType, CultureInfo.InvariantCulture);
+                return Activator.CreateInstance(type);
             }
-            catch (InvalidCastException ex)
-            {
-                throw new NotSupportedException(NotConvertableMessage, ex);
-            }
-            catch (FormatException ex)
-            {
-                throw new NotSupportedException(NotConvertableMessage, ex);
-            }
-
-            return converted;
-        }
-
-        private object ReadList(string storedValue, Type propertyType)
-        {
-            var listItemType = propertyType.GetGenericArguments()[0];
-            var list = CreateListInstance(propertyType);
-            var listInterface = (IList)list;
-
-            var valueList = settingsRepository.DeserializeList(storedValue);
-
-            foreach (var value in valueList)
-            {
-                listInterface.Add(ConvertValue(value, listItemType));
-            }
-
-            return list;
+            return null;
         }
 
         private static object CreateListInstance(Type propertyType)
@@ -126,27 +105,29 @@ namespace SettingsProviderNet
             foreach (var setting in settingsMetadata)
             {
                 var value = setting.ReadValue(settingsToSave) ?? setting.DefaultValue;
+                // Give enum a default
                 if (value == null && setting.UnderlyingType.IsEnum)
                     value = EnumHelper.GetValues(setting.UnderlyingType).First();
-                if (IsList(setting.UnderlyingType) && value != null)
-                    settings[GetKey<T>(setting)] = WriteList(value);
+
+                if (value != null)
+                {
+                    var ms = new MemoryStream();
+                    var writer = JsonReaderWriterFactory.CreateJsonWriter(ms, Encoding.Unicode);
+                    new DataContractJsonSerializer(setting.UnderlyingType).WriteObject(ms, value);
+                    writer.Flush();
+                    var jsonString = Encoding.Default.GetString(ms.ToArray());
+
+                    settings[setting.Key] = jsonString;
+                }
                 else
-                    settings[GetKey<T>(setting)] = Convert.ToString(value ?? string.Empty, CultureInfo.InvariantCulture);
+                {
+                    settings[setting.Key] =  string.Empty;
+                }
             }
             settingsRepository.Save(GetKey<T>(), settings);
         }
-
-        private string WriteList(object value)
-        {
-            var list = (
-                from object item in (IList)value
-                select Convert.ToString(item ?? string.Empty, CultureInfo.CurrentCulture))
-                .ToList();
-
-            return settingsRepository.SerializeList(list);
-        }
-
-        internal static string GetKey<T>(SettingDescriptor setting)
+        
+        internal static string GetLegacyKey<T>(SettingDescriptor setting)
         {
             var settingsType = typeof(T);
 
@@ -195,10 +176,13 @@ namespace SettingsProviderNet
             {
                 this.property = property;
                 DisplayName = property.Name;
+                Key = property.Name;
 
                 ReadAttribute<DefaultValueAttribute>(d => DefaultValue = d.Value);
                 ReadAttribute<DescriptionAttribute>(d => Description = d.Description);
                 ReadAttribute<DisplayNameAttribute>(d => DisplayName = d.DisplayName);
+                ReadAttribute<DataMemberAttribute>(d => Key = d.Name);
+                ReadAttribute<KeyAttribute>(d => Key = d.Key);
             }
 
             void ReadAttribute<TAttribute>(Action<TAttribute> callback)
@@ -220,6 +204,8 @@ namespace SettingsProviderNet
             public string Description { get; private set; }
 
             public string DisplayName { get; private set; }
+
+            public string Key { get; private set; }
 
             public void Write(object settings, object value)
             {
@@ -244,9 +230,13 @@ namespace SettingsProviderNet
                 return property.GetValue(settings, null);
             }
 
-#pragma warning disable 67
             public event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore 67
+
+            protected virtual void OnPropertyChanged(string propertyName)
+            {
+                var handler = PropertyChanged;
+                if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 

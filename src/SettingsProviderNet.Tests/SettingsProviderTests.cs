@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -12,10 +11,11 @@ namespace SettingsProviderNet.Tests
     {
         readonly SettingsProvider settingsRetreiver;
         readonly SettingsProvider settingsSaver;
+        readonly TestStorage store;
 
         public SettingsProviderTests()
         {
-            var store = new TestStorage();
+            store = new TestStorage();
             settingsRetreiver = new SettingsProvider(store);
             settingsSaver = new SettingsProvider(store);
         }
@@ -135,7 +135,7 @@ namespace SettingsProviderNet.Tests
             var settings = settingsRetreiver.GetSettings<TestSettings>();
 
             // assert
-            Assert.NotNull(settings.Complex);
+            Assert.NotNull(settings.NoSetter);
         }
 
         [Fact]
@@ -222,57 +222,57 @@ namespace SettingsProviderNet.Tests
             Assert.Empty(settings.List2);
         }
 
-        public class TestSettings
+        [Fact]
+        public void CanSpecifyKey()
         {
-            [DefaultValue("foo")]
-            public string TestProp1 { get; set; }
-
-            public MyEnum SomeEnum { get; set; }
-
-            public int TestProp2 { get; set; }
-
-            public DateTime? FirstRun { get; set; }
-
-            public ComplexType Complex { get { return new ComplexType(); } }
-
-            public List<string> List { get; set; }
-
-            public List<int> List2 { get; set; }
-
-            public IList<Guid> IdList { get; set; }
-
-            public class ComplexType
+            store.Save("TestSettings", new Dictionary<string, string>
             {
-            }
+                {"OriginalName", "\"Value\""}
+            });
+
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            Assert.Equal("Value", settings.RenamedProperty);
         }
-    }
 
-    public class TestStorage : JsonSettingsStoreBase
-    {
-        private readonly Dictionary<string, string> files = new Dictionary<string, string>();
-
-        public Dictionary<string, string> Files
+        [Fact]
+        public void CanLoadLegacySettings()
         {
-            get { return files; }
+            store.Save("TestSettings", new Dictionary<string, string>
+            {
+                {"SettingsProviderNet.Tests.TestSettings.TestProp1", "\"Value\""}
+            });
+
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            Assert.Equal("Value", settings.TestProp1);
         }
 
-        protected override void WriteTextFile(string filename, string fileContents)
+        [Fact]
+        public void SettingsAreNotFullyQualified()
         {
-            if (!Files.ContainsKey(filename))
-                Files.Add(filename, fileContents);
-            else
-                Files[filename] = fileContents;
+            settingsRetreiver.SaveSettings(new TestSettings
+            {
+                TestProp1 = "Value"
+            });
+
+            Assert.True(store.Load("TestSettings").ContainsKey("TestProp1"));
         }
 
-        protected override string ReadTextFile(string filename)
+        [Fact]
+        public void CanSerialiseComplexTypes()
         {
-            return Files.ContainsKey(filename) ? Files[filename] : null;
-        }
-    }
+            // arrange
+            settingsSaver.SaveSettings(new TestSettings { Complex = new ComplexType
+            {
+                SomeProp = "Value"
+            }});
 
-    public enum MyEnum
-    {
-        Value1,
-        Value2
+            // act
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Equal("Value", settings.Complex.SomeProp);
+        }
     }
 }
