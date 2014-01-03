@@ -32,6 +32,19 @@ namespace SettingsProviderNet.Tests
             // assert
             Assert.Equal(123, settings.TestProp2);
         }
+        
+        [Fact]
+        public void settings_provider_can_save_and_persist_bool()
+        {
+            // arrange
+            settingsSaver.SaveSettings(new TestSettings { Boolean = true });
+
+            // act
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.True(settings.Boolean);
+        }
 
         [Fact]
         public void settings_provider_can_save_and_retreive_string()
@@ -242,7 +255,8 @@ namespace SettingsProviderNet.Tests
             {
                 {"SettingsProviderNet.Tests.TestSettings.TestProp1", "Value"},
                 {"SettingsProviderNet.Tests.TestSettings.SomeEnum", "Value2"},
-                {"SettingsProviderNet.Tests.TestSettings.TestProp2", "2"}
+                {"SettingsProviderNet.Tests.TestSettings.TestProp2", "2"},
+                {"SettingsProviderNet.Tests.TestSettings.Boolean", "False"}
             });
 
             var settings = settingsRetreiver.GetSettings<TestSettings>();
@@ -250,6 +264,7 @@ namespace SettingsProviderNet.Tests
             Assert.Equal("Value", settings.TestProp1);
             Assert.Equal(MyEnum.Value2, settings.SomeEnum);
             Assert.Equal(2, settings.TestProp2);
+            Assert.False(settings.Boolean);
         }
 
         [Fact]

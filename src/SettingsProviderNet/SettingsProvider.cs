@@ -72,6 +72,8 @@ namespace SettingsProviderNet
             if (setting.UnderlyingType.IsEnum) return Enum.Parse(setting.UnderlyingType, storedValue);
             if (!string.IsNullOrEmpty(storedValue) && setting.UnderlyingType == typeof(string) && !storedValue.StartsWith("\""))
                 storedValue = string.Format("\"{0}\"", storedValue);
+            if (setting.UnderlyingType == typeof (bool))
+                storedValue = storedValue.ToLower();
 
             return new DataContractJsonSerializer(setting.UnderlyingType)
                 .ReadObject(new MemoryStream(Encoding.Default.GetBytes(storedValue)));

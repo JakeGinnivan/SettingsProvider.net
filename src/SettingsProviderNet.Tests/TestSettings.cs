@@ -27,5 +27,7 @@ namespace SettingsProviderNet.Tests
         public string RenamedProperty { get; set; }
 
         public ComplexType Complex { get; set; }
+
+        public bool Boolean { get; set; }
     }
 }
