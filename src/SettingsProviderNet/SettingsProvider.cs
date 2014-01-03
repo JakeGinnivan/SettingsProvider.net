@@ -69,6 +69,9 @@ namespace SettingsProviderNet
             var isList = IsList(propertyType);
             if (isList && string.IsNullOrEmpty(storedValue)) return CreateListInstance(propertyType);
             if (string.IsNullOrEmpty(storedValue)) return GetDefault(propertyType);
+            if (setting.UnderlyingType.IsEnum) return Enum.Parse(setting.UnderlyingType, storedValue);
+            if (!string.IsNullOrEmpty(storedValue) && setting.UnderlyingType == typeof(string) && !storedValue.StartsWith("\""))
+                storedValue = string.Format("\"{0}\"", storedValue);
 
             return new DataContractJsonSerializer(setting.UnderlyingType)
                 .ReadObject(new MemoryStream(Encoding.Default.GetBytes(storedValue)));
@@ -106,10 +109,14 @@ namespace SettingsProviderNet
             {
                 var value = setting.ReadValue(settingsToSave) ?? setting.DefaultValue;
                 // Give enum a default
-                if (value == null && setting.UnderlyingType.IsEnum)
-                    value = EnumHelper.GetValues(setting.UnderlyingType).First();
+                if (setting.UnderlyingType.IsEnum)
+                {
+                    if (value == null)
+                        value = EnumHelper.GetValues(setting.UnderlyingType).First();
 
-                if (value != null)
+                    settings[setting.Key] = value.ToString();
+                }
+                else if (value != null)
                 {
                     var ms = new MemoryStream();
                     var writer = JsonReaderWriterFactory.CreateJsonWriter(ms, Encoding.Unicode);

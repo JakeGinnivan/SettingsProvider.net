@@ -240,12 +240,16 @@ namespace SettingsProviderNet.Tests
         {
             store.Save("TestSettings", new Dictionary<string, string>
             {
-                {"SettingsProviderNet.Tests.TestSettings.TestProp1", "\"Value\""}
+                {"SettingsProviderNet.Tests.TestSettings.TestProp1", "Value"},
+                {"SettingsProviderNet.Tests.TestSettings.SomeEnum", "Value2"},
+                {"SettingsProviderNet.Tests.TestSettings.TestProp2", "2"}
             });
 
             var settings = settingsRetreiver.GetSettings<TestSettings>();
 
             Assert.Equal("Value", settings.TestProp1);
+            Assert.Equal(MyEnum.Value2, settings.SomeEnum);
+            Assert.Equal(2, settings.TestProp2);
         }
 
         [Fact]
