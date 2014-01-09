@@ -26,7 +26,7 @@ Start of by creating your settings class, marking up with metadata
 ### Reading Settings
 
     var settingsProvider = new SettingsProvider(); //By default uses IsolatedStorage for storage
-    var mySettings = settingsProvider.Load<MySettings>();
+    var mySettings = settingsProvider.GetSettings<MySettings>();
     Assert.True(mySettings.RememberMe); 
 
 ### Saving Settings
