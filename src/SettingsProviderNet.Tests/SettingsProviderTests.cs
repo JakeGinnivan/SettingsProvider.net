@@ -293,5 +293,18 @@ namespace SettingsProviderNet.Tests
             // assert
             Assert.Equal("Value", settings.Complex.SomeProp);
         }
+
+        [Fact]
+        public void settings_provider_can_save_and_retreive_protected_string()
+        {
+            // arrange
+            settingsSaver.SaveSettings(new TestSettings { ProtectedString = "crypto" });
+
+            // act
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Equal("crypto", settings.ProtectedString);
+        }
     }
 }
