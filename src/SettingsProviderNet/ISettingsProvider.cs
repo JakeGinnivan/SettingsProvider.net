@@ -13,8 +13,8 @@ namespace SettingsProviderNet
         /// <returns></returns>
         T GetSettings<T>(bool freshCopy = false) where T : new();
         void SaveSettings<T>(T settings);
-        IEnumerable<SettingsProvider.SettingDescriptor> ReadSettingMetadata<T>();
-        IEnumerable<SettingsProvider.SettingDescriptor> ReadSettingMetadata(Type settingsType);
+        IEnumerable<ISettingDescriptor> ReadSettingMetadata<T>();
+        IEnumerable<ISettingDescriptor> ReadSettingMetadata(Type settingsType);
         T ResetToDefaults<T>() where T : new();
     }
 }

@@ -29,5 +29,8 @@ namespace SettingsProviderNet.Tests
         public ComplexType Complex { get; set; }
 
         public bool Boolean { get; set; }
+
+        [ProtectedString]
+        public string ProtectedString { get; set; }
     }
 }

@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
@@ -17,13 +14,15 @@ namespace SettingsProviderNet
     {
         readonly ISettingsStorage settingsRepository;
         readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
+        readonly string secretKey;
 
-        public SettingsProvider(ISettingsStorage settingsRepository = null)
+        public SettingsProvider(ISettingsStorage settingsRepository = null, string secretKey = null)
         {
             this.settingsRepository = settingsRepository ?? new IsolatedStorageSettingsStore();
+            this.secretKey = secretKey;
         }
 
-        public T GetSettings<T>(bool fresh = false) where T : new()
+        public virtual T GetSettings<T>(bool fresh = false) where T : new()
         {
             var type = typeof (T);
             if (!fresh && cache.ContainsKey(type))
@@ -53,7 +52,7 @@ namespace SettingsProviderNet
             return settings;
         }
 
-        object GetDefaultValue(SettingDescriptor setting)
+        object GetDefaultValue(ISettingDescriptor setting)
         {
             return setting.DefaultValue ?? ConvertValue(null, setting);
         }
@@ -63,7 +62,7 @@ namespace SettingsProviderNet
             return typeof(T).Name;
         }
 
-        object ConvertValue(string storedValue, SettingDescriptor setting)
+        object ConvertValue(string storedValue, ISettingDescriptor setting)
         {
             var propertyType = setting.Property.PropertyType;
             var isList = IsList(propertyType);
@@ -100,7 +99,7 @@ namespace SettingsProviderNet
                 (propertyType.IsGenericType && typeof(IList<>) == propertyType.GetGenericTypeDefinition());
         }
 
-        public void SaveSettings<T>(T settingsToSave)
+        public virtual void SaveSettings<T>(T settingsToSave)
         {
             cache[typeof (T)] = settingsToSave;
 
@@ -135,28 +134,28 @@ namespace SettingsProviderNet
             }
             settingsRepository.Save(GetKey<T>(), settings);
         }
-        
-        internal static string GetLegacyKey<T>(SettingDescriptor setting)
+
+        internal static string GetLegacyKey<T>(ISettingDescriptor setting)
         {
             var settingsType = typeof(T);
 
             return string.Format("{0}.{1}", settingsType.FullName, setting.Property.Name);
         }
 
-        public IEnumerable<SettingDescriptor> ReadSettingMetadata<T>()
+        public virtual IEnumerable<ISettingDescriptor> ReadSettingMetadata<T>()
         {
             return ReadSettingMetadata(typeof(T));
         }
 
-        public IEnumerable<SettingDescriptor> ReadSettingMetadata(Type settingsType)
+        public virtual IEnumerable<ISettingDescriptor> ReadSettingMetadata(Type settingsType)
         {
             return settingsType.GetProperties()
                 .Where(x => x.CanRead && x.CanWrite)
-                .Select(x => new SettingDescriptor(x))
+                .Select(x => new SettingDescriptor(x, secretKey))
                 .ToArray();
         }
 
-        public T ResetToDefaults<T>() where T : new()
+        public virtual T ResetToDefaults<T>() where T : new()
         {
             settingsRepository.Save(GetKey<T>(), new Dictionary<string, string>());
 
@@ -175,77 +174,6 @@ namespace SettingsProviderNet
             }
 
             return GetSettings<T>();
-        }
-
-        public class SettingDescriptor : INotifyPropertyChanged
-        {
-            readonly PropertyInfo property;
-
-            public SettingDescriptor(PropertyInfo property)
-            {
-                this.property = property;
-                DisplayName = property.Name;
-                Key = property.Name;
-
-                ReadAttribute<DefaultValueAttribute>(d => DefaultValue = d.Value);
-                ReadAttribute<DescriptionAttribute>(d => Description = d.Description);
-                ReadAttribute<DisplayNameAttribute>(d => DisplayName = d.DisplayName);
-                ReadAttribute<DataMemberAttribute>(d => Key = d.Name);
-                ReadAttribute<KeyAttribute>(d => Key = d.Key);
-            }
-
-            void ReadAttribute<TAttribute>(Action<TAttribute> callback)
-            {
-                var instances = property.GetCustomAttributes(typeof(TAttribute), true).OfType<TAttribute>();
-                foreach (var instance in instances)
-                {
-                    callback(instance);
-                }
-            }
-
-            public PropertyInfo Property
-            {
-                get { return property; }
-            }
-
-            public object DefaultValue { get; private set; }
-
-            public string Description { get; private set; }
-
-            public string DisplayName { get; private set; }
-
-            public string Key { get; private set; }
-
-            public void Write(object settings, object value)
-            {
-                property.SetValue(settings, value, null);
-            }
-
-            /// <summary>
-            /// If the property type is nullable, returns the type. i.e int? returns int
-            /// </summary>
-            public Type UnderlyingType
-            {
-                get
-                {
-                    if (Property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                        return property.PropertyType.GetGenericArguments()[0];
-                    return property.PropertyType;
-                }
-            }
-
-            public object ReadValue(object settings)
-            {
-                return property.GetValue(settings, null);
-            }
-
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            protected virtual void OnPropertyChanged(string propertyName)
-            {
-                var handler = PropertyChanged;
-                if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 
