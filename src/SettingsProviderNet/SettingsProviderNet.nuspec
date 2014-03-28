@@ -11,7 +11,8 @@
     <description>Inspired by FunnelWeb's settings provider, SettingsProvider.net lets you create Poco's which store your application settings with the ability to define defaults and metadata.</description>
     <copyright>Copyright Jake Ginnivan 2012</copyright>
     <tags>Settings IsolatedStorage SettingsProvider</tags>
-    <releaseNotes>v2.0.0 - Switch to class library, Improved Serialisation, Increased flexibility</releaseNotes>
+    <releaseNotes>v2.0.0 - Switch to class library, Improved Serialisation, Increased flexibility
+v2.1.0 - Added encrypted values support</releaseNotes>
   </metadata>
   <files>
     <file src="SettingsProviderNet.dll" target="lib\net40" />

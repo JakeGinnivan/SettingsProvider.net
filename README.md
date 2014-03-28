@@ -21,6 +21,9 @@ Start of by creating your settings class, marking up with metadata
 
         [Key("OriginalName")]
         public string Renamed { get; set; }
+
+        [ProtectedString]
+        public string Encrypted { get; set; }
     }
 
 ### Reading Settings
