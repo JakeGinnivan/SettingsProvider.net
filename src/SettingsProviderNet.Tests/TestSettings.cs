@@ -32,5 +32,9 @@ namespace SettingsProviderNet.Tests
 
         [ProtectedString]
         public string ProtectedString { get; set; }
+
+        [DefaultValue("test")]
+        [ProtectedString]
+        public string ProtectedStringWithDefault { get; set; }
     }
 }
