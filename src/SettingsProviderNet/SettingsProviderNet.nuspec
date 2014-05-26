@@ -12,7 +12,8 @@
     <copyright>Copyright Jake Ginnivan 2012</copyright>
     <tags>Settings IsolatedStorage SettingsProvider</tags>
     <releaseNotes>v2.0.0 - Switch to class library, Improved Serialisation, Increased flexibility
-v2.1.0 - Added encrypted values support</releaseNotes>
+v2.1.0 - Added encrypted values support
+v2.1.1 - Default values work with encrypted properties - thanks to ANovitsky</releaseNotes>
   </metadata>
   <files>
     <file src="SettingsProviderNet.dll" target="lib\net40" />
