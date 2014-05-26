@@ -306,5 +306,15 @@ namespace SettingsProviderNet.Tests
             // assert
             Assert.Equal("crypto", settings.ProtectedString);
         }
+
+        [Fact]
+        public void settings_provider_retreive_protected_defaultvalue_string()
+        {
+            // act
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Equal("test", settings.ProtectedStringWithDefault);
+        }
     }
 }

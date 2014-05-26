@@ -54,7 +54,12 @@ namespace SettingsProviderNet
 
         object GetDefaultValue(ISettingDescriptor setting)
         {
-            return setting.DefaultValue ?? ConvertValue(null, setting);
+            var value = setting.DefaultValue ?? ConvertValue(null, setting);
+
+            if (setting.IsProtected && value != null)
+                value = ProtectedDataUtils.Encrypt((string)value, secretKey ?? typeof(SettingDescriptor).FullName);
+            
+            return value;
         }
 
         static string GetKey<T>()

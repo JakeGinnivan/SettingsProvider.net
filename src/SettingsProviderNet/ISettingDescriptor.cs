@@ -13,6 +13,8 @@ namespace SettingsProviderNet
         string DisplayName { get; }
         string Key { get; }
 
+        bool IsProtected { get; }
+
         /// <summary>
         /// If the property type is nullable, returns the type. i.e int? returns int
         /// </summary>

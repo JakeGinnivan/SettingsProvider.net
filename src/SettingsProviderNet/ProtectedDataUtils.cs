@@ -32,6 +32,10 @@ namespace SettingsProviderNet
 
                 return Convert.ToBase64String(cipherBytes);
             }
+            catch (FormatException)
+            {
+                return String.Empty;
+            }
             catch (CryptographicException)
             {
                 return String.Empty; //for positive result, if entropy incorrect 
@@ -63,6 +67,10 @@ namespace SettingsProviderNet
                 byte[] valueBytes = ProtectedData.Unprotect(cipherBytes, entropyBytes, DataProtectionScope.CurrentUser);
 
                 return Encoding.UTF8.GetString(valueBytes);
+            }
+            catch (FormatException)
+            {
+                return String.Empty;
             }
             catch (CryptographicException)
             {
