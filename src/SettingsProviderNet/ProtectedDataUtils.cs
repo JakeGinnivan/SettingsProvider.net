@@ -28,7 +28,7 @@ namespace SettingsProviderNet
             try
             {
                 byte[] valueBytes = Encoding.UTF8.GetBytes(value);
-                byte[] cipherBytes = ProtectedData.Protect(valueBytes, entropyBytes, DataProtectionScope.CurrentUser);
+                byte[] cipherBytes = ProtectedData.Protect(valueBytes, entropyBytes, DataProtectionScope.LocalMachine);
 
                 return Convert.ToBase64String(cipherBytes);
             }
@@ -64,7 +64,7 @@ namespace SettingsProviderNet
             try
             {
                 byte[] cipherBytes = Convert.FromBase64String(cipher);
-                byte[] valueBytes = ProtectedData.Unprotect(cipherBytes, entropyBytes, DataProtectionScope.CurrentUser);
+                byte[] valueBytes = ProtectedData.Unprotect(cipherBytes, entropyBytes, DataProtectionScope.LocalMachine);
 
                 return Encoding.UTF8.GetString(valueBytes);
             }
