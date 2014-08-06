@@ -80,7 +80,7 @@ namespace SettingsProviderNet
                 storedValue = storedValue.ToLower();
 
             return new DataContractJsonSerializer(setting.UnderlyingType)
-                .ReadObject(new MemoryStream(Encoding.Default.GetBytes(storedValue)));
+                .ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(storedValue)));
         }
 
         static object GetDefault(Type type)
@@ -125,10 +125,10 @@ namespace SettingsProviderNet
                 else if (value != null)
                 {
                     var ms = new MemoryStream();
-                    var writer = JsonReaderWriterFactory.CreateJsonWriter(ms, Encoding.Unicode);
+                    var writer = JsonReaderWriterFactory.CreateJsonWriter(ms, Encoding.UTF8);
                     new DataContractJsonSerializer(setting.UnderlyingType).WriteObject(ms, value);
                     writer.Flush();
-                    var jsonString = Encoding.Default.GetString(ms.ToArray());
+                    var jsonString = Encoding.UTF8.GetString(ms.ToArray());
 
                     settings[setting.Key] = jsonString;
                 }
