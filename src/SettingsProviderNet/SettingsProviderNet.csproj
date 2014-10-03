@@ -47,6 +47,7 @@
     <Compile Include="IsolatedStorageSettingsStore.cs" />
     <Compile Include="JsonSettingsStoreBase.cs" />
     <Compile Include="KeyAttribute.cs" />
+    <Compile Include="PortableStorage.cs" />
     <Compile Include="ProtectedDataUtils.cs" />
     <Compile Include="ProtectedStringAttribute.cs" />
     <Compile Include="RoamingAppDataStorage.cs" />
