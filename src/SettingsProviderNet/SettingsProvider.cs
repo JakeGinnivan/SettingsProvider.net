@@ -114,6 +114,15 @@ namespace SettingsProviderNet
             foreach (var setting in settingsMetadata)
             {
                 var value = setting.ReadValue(settingsToSave) ?? setting.DefaultValue;
+
+                if (value is DateTime)
+                {
+                    if ((DateTime)value == DateTime.MinValue)
+                    {
+                        value = DateTime.MinValue.ToUniversalTime();
+                    }
+                }
+
                 // Give enum a default
                 if (setting.UnderlyingType.IsEnum)
                 {
