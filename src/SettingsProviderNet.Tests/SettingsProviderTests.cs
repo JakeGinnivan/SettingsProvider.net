@@ -102,6 +102,19 @@ namespace SettingsProviderNet.Tests
         }
 
         [Fact]
+        public void settings_provider_can_save_and_retreive_datetime_minvalue()
+        {
+            // arrange
+            settingsSaver.SaveSettings(new TestSettings { FirstRun = DateTime.MinValue });
+
+            // act
+            var settings = settingsRetreiver.GetSettings<TestSettings>();
+
+            // assert
+            Assert.Equal(settings.FirstRun, DateTime.MinValue);
+        }
+
+        [Fact]
         public void settings_provider_can_save_and_retreive_list()
         {
             // arrange
