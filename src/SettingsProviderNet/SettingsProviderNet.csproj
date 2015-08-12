@@ -50,6 +50,7 @@
     <Compile Include="PortableStorage.cs" />
     <Compile Include="ProtectedDataUtils.cs" />
     <Compile Include="ProtectedStringAttribute.cs" />
+    <Compile Include="LocalAppDataStorage.cs" />
     <Compile Include="RoamingAppDataStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingDescriptor.cs" />
