@@ -2,8 +2,8 @@ using System;
 
 namespace SettingsProviderNet
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class ProtectedStringAttribute : Attribute
-    {
-    }
+  [AttributeUsage(AttributeTargets.Property)]
+  public class ProtectedStringAttribute : Attribute
+  {
+  }
 }
