@@ -32,6 +32,8 @@ namespace SettingsProviderNet
       var settings = new T();
       var settingMetadata = ReadSettingMetadata<T>();
 
+      bool isFileNotExist = settingsLookup.Count == 0;
+
       foreach (var setting in settingMetadata)
       {
         // Write over it using the stored value if exists
@@ -48,6 +50,9 @@ namespace SettingsProviderNet
       }
 
       cache[typeof(T)] = settings;
+
+      if (isFileNotExist)
+        SaveSettings<T>(settings);
 
       return settings;
     }

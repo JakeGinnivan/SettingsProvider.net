@@ -22,7 +22,7 @@ namespace SettingsProviderNet
 
     protected abstract void WriteTextFile(string filename, string fileContents);
 
-    public Dictionary<string, string> Load(string key)
+    public IReadOnlyDictionary<string, string> Load(string key)
     {
       var filename = key + ".settings";
 
