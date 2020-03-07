@@ -1,3 +1,4 @@
+using SettingsProviderNet.Storages2;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,27 +13,21 @@ namespace SettingsProviderNet
 
   public class SettingsProvider : ISettingsProvider
   {
-    readonly ISettingsStorage settingsRepository;
-    readonly Dictionary<Type, object> cache = new Dictionary<Type, object>();
-    readonly string secretKey;
-
-    public SettingsProvider(ISettingsStorage settingsRepository = null, string secretKey = null)
+    public SettingsProvider(ISettingsStorage2 settingsRepository, string secretKey = null)
     {
-      this.settingsRepository = settingsRepository ?? new IsolatedStorageSettingsStore();
-      this.secretKey = secretKey;
+      this._storage = settingsRepository;
+      this._secretKey = secretKey;
     }
 
     public virtual T GetSettings<T>(bool fresh = false) where T : new()
     {
       var type = typeof(T);
-      if (!fresh && cache.ContainsKey(type))
-        return (T)cache[type];
+      if (!fresh && _cache.ContainsKey(type))
+        return (T)_cache[type];
 
-      var settingsLookup = settingsRepository.Load(GetKey<T>());
+      bool isFileNotExist = _storage.TryLoad(out var settingsLookup);
       var settings = new T();
       var settingMetadata = ReadSettingMetadata<T>();
-
-      bool isFileNotExist = settingsLookup.Count == 0;
 
       foreach (var setting in settingMetadata)
       {
@@ -49,9 +44,9 @@ namespace SettingsProviderNet
         setting.Write(settings, value);
       }
 
-      cache[typeof(T)] = settings;
+      _cache[typeof(T)] = settings;
 
-      if (isFileNotExist)
+      if (isFileNotExist && _storage.Config.CreateIfNotExist)
         SaveSettings<T>(settings);
 
       return settings;
@@ -62,14 +57,9 @@ namespace SettingsProviderNet
       var value = setting.DefaultValue ?? ConvertValue(null, setting);
 
       if (setting.IsProtected && value != null)
-        value = ProtectedDataUtils.Encrypt((string)value, secretKey ?? typeof(SettingDescriptor).FullName);
+        value = ProtectedDataUtils.Encrypt((string)value, _secretKey ?? typeof(SettingDescriptor).FullName);
 
       return value;
-    }
-
-    static string GetKey<T>()
-    {
-      return typeof(T).Name;
     }
 
     object ConvertValue(string storedValue, ISettingDescriptor setting)
@@ -111,7 +101,7 @@ namespace SettingsProviderNet
 
     public virtual void SaveSettings<T>(T settingsToSave)
     {
-      cache[typeof(T)] = settingsToSave;
+      _cache[typeof(T)] = settingsToSave;
 
       var settings = new Dictionary<string, string>();
       var settingsMetadata = ReadSettingMetadata<T>();
@@ -142,7 +132,7 @@ namespace SettingsProviderNet
           settings[setting.Key] = string.Empty;
         }
       }
-      settingsRepository.Save(GetKey<T>(), settings);
+      _storage.Save(settings);
     }
 
     internal static string GetLegacyKey<T>(ISettingDescriptor setting)
@@ -161,18 +151,18 @@ namespace SettingsProviderNet
     {
       return settingsType.GetProperties()
           .Where(x => x.CanRead && x.CanWrite)
-          .Select(x => new SettingDescriptor(x, secretKey))
+          .Select(x => new SettingDescriptor(x, _secretKey))
           .ToArray();
     }
 
     public virtual T ResetToDefaults<T>() where T : new()
     {
-      settingsRepository.Save(GetKey<T>(), new Dictionary<string, string>());
+      _storage.Save(new Dictionary<string, string>());
 
       var type = typeof(T);
-      if (cache.ContainsKey(type))
+      if (_cache.ContainsKey(type))
       {
-        var cachedCopy = cache[type];
+        var cachedCopy = _cache[type];
         var settingMetadata = ReadSettingMetadata<T>();
 
         foreach (var setting in settingMetadata)
@@ -185,7 +175,9 @@ namespace SettingsProviderNet
 
       return GetSettings<T>();
     }
-  }
 
-  // ReSharper restore InconsistentNaming
+    readonly ISettingsStorage2 _storage;
+    readonly Dictionary<Type, object> _cache = new Dictionary<Type, object>();
+    readonly string _secretKey;
+  }
 }

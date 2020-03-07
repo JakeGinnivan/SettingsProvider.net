@@ -6,8 +6,9 @@ namespace SettingsProviderNet
 {
   public interface ISettingsStorage2
   {
-    void Configure();
+    void Configure(StorageOptions config);
     void Save(Dictionary<string, string> settings);
-    IReadOnlyDictionary<string, string> Load();
+    bool TryLoad(out IReadOnlyDictionary<string, string> values);
+    StorageOptions Config { get; }
   }
 }

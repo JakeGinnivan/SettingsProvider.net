@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace SettingsProviderNet
+namespace SettingsProviderNet.Storages
 {
   public class PortableStorage : JsonSettingsStoreBase
   {

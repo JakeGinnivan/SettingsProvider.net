@@ -1,7 +1,7 @@
 using System.IO;
 using System.IO.IsolatedStorage;
 
-namespace SettingsProviderNet
+namespace SettingsProviderNet.Storages
 {
   public class IsolatedStorageSettingsStore : JsonSettingsStoreBase
   {

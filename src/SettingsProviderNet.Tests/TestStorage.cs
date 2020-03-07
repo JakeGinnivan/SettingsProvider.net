@@ -2,26 +2,37 @@
 
 namespace SettingsProviderNet.Tests
 {
-    public class TestStorage : JsonSettingsStoreBase
+  public class TestStorage : ISettingsStorage2
+  {
+    private Dictionary<string, string> _settings = new Dictionary<string, string>();
+
+    public Dictionary<string, string> Files
     {
-        private readonly Dictionary<string, string> files = new Dictionary<string, string>();
-
-        public Dictionary<string, string> Files
-        {
-            get { return files; }
-        }
-
-        protected override void WriteTextFile(string filename, string fileContents)
-        {
-            if (!Files.ContainsKey(filename))
-                Files.Add(filename, fileContents);
-            else
-                Files[filename] = fileContents;
-        }
-
-        protected override string ReadTextFile(string filename)
-        {
-            return Files.ContainsKey(filename) ? Files[filename] : null;
-        }
+      get { return _settings; }
     }
+
+    public StorageOptions Config { get; private set; }
+
+    public void Configure(StorageOptions config)
+    {
+      Config = config;
+    }
+
+    public void Save(Dictionary<string, string> settings)
+    {
+      _settings = new Dictionary<string, string>(settings);
+    }
+
+    public bool TryLoad(out IReadOnlyDictionary<string, string> values)
+    {
+      if (_settings == null)
+      {
+        values = new Dictionary<string, string>();
+        return false;
+      }
+
+      values = _settings;
+      return true;
+    }
+  }
 }

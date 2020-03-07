@@ -11,12 +11,12 @@ namespace SettingsProviderNet.Tests
   {
     readonly SettingsProvider settingsRetreiver;
     readonly SettingsProvider settingsSaver;
-    readonly ISettingsStorage store;
+    readonly ISettingsStorage2 store;
 
     public SettingsProviderTests()
     {
-      //store = new TestStorage();
-      store = new RoamingAppDataStorage("SettingsProviderNet");
+      store = new TestStorage();
+      store.Configure(StorageOptions.Create().SetAppName("test").Build());
       settingsRetreiver = new SettingsProvider(store);
       settingsSaver = new SettingsProvider(store);
     }
@@ -239,7 +239,7 @@ namespace SettingsProviderNet.Tests
     [Fact]
     public void CanSpecifyKey()
     {
-      store.Save("TestSettings", new Dictionary<string, string>
+      store.Save(new Dictionary<string, string>
             {
                 {"OriginalName", "\"Value\""}
             });
@@ -252,7 +252,7 @@ namespace SettingsProviderNet.Tests
     [Fact]
     public void CanLoadLegacySettings()
     {
-      store.Save("TestSettings", new Dictionary<string, string>
+      store.Save(new Dictionary<string, string>
             {
                 {"SettingsProviderNet.Tests.TestSettings.TestProp1", "Value"},
                 {"SettingsProviderNet.Tests.TestSettings.SomeEnum", "Value2"},
@@ -276,7 +276,8 @@ namespace SettingsProviderNet.Tests
         TestProp1 = "Value"
       });
 
-      Assert.True(store.Load("TestSettings").ContainsKey("TestProp1"));
+      Assert.True(store.TryLoad(out var dic));
+      Assert.True(dic.ContainsKey("TestProp1"));
     }
 
     [Fact]

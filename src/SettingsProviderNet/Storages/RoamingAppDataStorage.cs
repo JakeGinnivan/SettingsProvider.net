@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace SettingsProviderNet
+namespace SettingsProviderNet.Storages
 {
   public class RoamingAppDataStorage : JsonSettingsStoreBase
   {
