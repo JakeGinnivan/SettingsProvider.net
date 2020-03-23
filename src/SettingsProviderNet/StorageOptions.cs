@@ -19,11 +19,11 @@ namespace SettingsProviderNet
 
     public string FileName { get; internal set; }
 
-    public string TargetFileName { get; internal set; }
+    public string PathToTargetFile { get; internal set; }
 
     public string GetPath()
     {
-      return TargetFileName ?? Path.Combine(Environment.GetFolderPath(SpecialFolder.Value), AppName, TargetFileName);
+      return PathToTargetFile ?? Path.Combine(Environment.GetFolderPath(SpecialFolder.Value), AppName, FileName);
     }
   }
 }

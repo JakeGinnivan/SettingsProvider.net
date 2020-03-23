@@ -1,4 +1,4 @@
-using SettingsProviderNet.Storages2;
+using SettingsProviderNet.Storages;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,9 +13,9 @@ namespace SettingsProviderNet
 
   public class SettingsProvider : ISettingsProvider
   {
-    public SettingsProvider(ISettingsStorage2 settingsRepository, string secretKey = null)
+    public SettingsProvider(ISettingsStorage2 storage, string secretKey = null)
     {
-      this._storage = settingsRepository;
+      this._storage = storage;
       this._secretKey = secretKey;
     }
 

@@ -28,13 +28,13 @@ namespace SettingsProviderNet
         throw new ArgumentException(ex.Message);
       }
 
-      _config.TargetFileName = path;
+      _config.PathToTargetFile = path;
       return this;
     }
 
     public StorageOptionsBuilder SetFolder(Environment.SpecialFolder specialFolder)
     {
-      if (_config.TargetFileName != null)
+      if (_config.PathToTargetFile != null)
         throw new InvalidOperationException("Target file already specified");
 
       _config.SpecialFolder = specialFolder;
@@ -43,7 +43,7 @@ namespace SettingsProviderNet
 
     public StorageOptionsBuilder SetAppName(string appName)
     {
-      if (_config.TargetFileName != null)
+      if (_config.PathToTargetFile != null)
         throw new InvalidOperationException("Target file already specified");
 
       _config.AppName = appName;
@@ -52,7 +52,7 @@ namespace SettingsProviderNet
 
     public StorageOptionsBuilder FileName(string fileName)
     {
-      if (_config.TargetFileName != null)
+      if (_config.PathToTargetFile != null)
         throw new InvalidOperationException("Target file already specified");
 
       _config.FileName = fileName;
@@ -70,7 +70,7 @@ namespace SettingsProviderNet
 
     public StorageOptions Build()
     {
-      if (_config.TargetFileName != null)
+      if (_config.PathToTargetFile != null)
         return _config;
 
       if (_config.AppName == null)
