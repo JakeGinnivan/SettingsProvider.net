@@ -2,6 +2,7 @@ using SettingsProviderNet.Storages;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
@@ -76,6 +77,9 @@ namespace SettingsProviderNet
       if (setting.UnderlyingType.IsEnum)
         return Enum.Parse(setting.UnderlyingType, storedValue);
 
+      if (setting.UnderlyingType == typeof(TimeSpan))
+        return TimeSpan.ParseExact(storedValue, Consts.TimeSpanFormat, CultureInfo.InvariantCulture);
+
       if (!string.IsNullOrEmpty(storedValue) && setting.UnderlyingType == typeof(string) && !storedValue.StartsWith("\""))
         storedValue = string.Format("\"{0}\"", storedValue);
 
@@ -83,7 +87,7 @@ namespace SettingsProviderNet
         storedValue = storedValue.ToLower();
 
       return new DataContractJsonSerializer(setting.UnderlyingType)
-          .ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(storedValue)));
+        .ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(storedValue)));
     }
 
     static object GetDefault(Type type)
