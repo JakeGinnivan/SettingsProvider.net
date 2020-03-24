@@ -17,7 +17,7 @@ namespace SettingsProviderNet.Tests
     public SettingsProviderTests()
     {
       store = new TestStorage();
-      store.Configure(StorageOptions.Create().SetAppName("test").Build());
+      store.Configure(StorageConfig.Create().SetAppName("test").Build());
       settingsRetreiver = new SettingsProvider(store);
       settingsSaver = new SettingsProvider(store);
     }

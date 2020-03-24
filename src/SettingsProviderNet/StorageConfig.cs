@@ -5,9 +5,9 @@ using System.Text;
 
 namespace SettingsProviderNet
 {
-  public class StorageOptions
+  public class StorageConfig
   {
-    internal StorageOptions() { }
+    internal StorageConfig() { }
 
     public static StorageConfigBuilder Create() => new StorageConfigBuilder();
 

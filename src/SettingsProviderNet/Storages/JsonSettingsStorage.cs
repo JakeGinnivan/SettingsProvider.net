@@ -14,7 +14,7 @@ namespace SettingsProviderNet.Storages
       _serializerOptions.WriteIndented = true;
     }
 
-    public void Configure(StorageOptions config)
+    public void Configure(StorageConfig config)
     {
       if (Config != null)
         throw new InvalidOperationException("already specified");
@@ -73,7 +73,7 @@ namespace SettingsProviderNet.Storages
       }
     }
 
-    public StorageOptions Config { get; private set; }
+    public StorageConfig Config { get; private set; }
 
     private string _pathToConfigFile;
     private static readonly JsonSerializerOptions _serializerOptions;

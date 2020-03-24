@@ -11,9 +11,9 @@ namespace SettingsProviderNet.Tests
       get { return _settings; }
     }
 
-    public StorageOptions Config { get; private set; }
+    public StorageConfig Config { get; private set; }
 
-    public void Configure(StorageOptions config)
+    public void Configure(StorageConfig config)
     {
       Config = config;
     }

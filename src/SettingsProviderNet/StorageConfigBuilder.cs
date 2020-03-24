@@ -68,7 +68,7 @@ namespace SettingsProviderNet
       return this;
     }
 
-    public StorageOptions Build()
+    public StorageConfig Build()
     {
       if (_config.PathToTargetFile != null)
         return _config;
@@ -85,7 +85,7 @@ namespace SettingsProviderNet
       return _config;
     }
 
-    private readonly StorageOptions _config = new StorageOptions();
+    private readonly StorageConfig _config = new StorageConfig();
     private const string DefaultFileName = "Settings.json";
     private const Environment.SpecialFolder DefaultSpecialFolder = Environment.SpecialFolder.LocalApplicationData;
   }

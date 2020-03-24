@@ -22,6 +22,8 @@ namespace SettingsProviderNet
 
     public virtual T GetSettings<T>(bool fresh = false) where T : new()
     {
+      //TODO validate settings class (key attribure must be unique)
+
       var type = typeof(T);
       if (!fresh && _cache.ContainsKey(type))
         return (T)_cache[type];
