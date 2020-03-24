@@ -1,4 +1,4 @@
-# SettingsProvider.NET
+# SimpleSettingsStorage
 The aim of settings provider is to quickly give you a simple way to store application settings and read metadata about those settings, like description, name, default values etc
 
 v2 Has added a few things to make versioning easier, the Key attribute allows you to rename properties, and types are no longer fully qualified (so you can move classes)
@@ -28,13 +28,32 @@ Start of by creating your settings class, marking up with metadata
 
 ### Reading Settings
 
-    var settingsProvider = new SettingsProvider(); //By default uses IsolatedStorage for storage
-    var mySettings = settingsProvider.GetSettings<MySettings>();
-    Assert.True(mySettings.RememberMe); 
+      var config = new StorageConfigBuilder()
+        .FileName("Test.json")
+        .SetAppName("TestApp")
+        .SetFolder(Environment.SpecialFolder.LocalApplicationData)
+        .CreateIfNotExist(true)
+        .Build();
+
+      var storage = new Storages.JsonSettingsStorage();
+      storage.Configure(config);
+
+      var provider = new SettingsProvider(storage);
+      var mySettings = provider.GetSettings<TestSettings>();
 
 ### Saving Settings
 
-    var settingsProvider = new SettingsProvider(); //By default uses IsolatedStorage for storage
+    var config = new StorageConfigBuilder()
+        .FileName("Test.json")
+        .SetAppName("TestApp")
+        .SetFolder(Environment.SpecialFolder.LocalApplicationData)
+        .CreateIfNotExist(true)
+        .Build();
+
+    var storage = new Storages.JsonSettingsStorage();
+    storage.Configure(config);
+
+    var settingsProvider = new SettingsProvider(storage);
     var mySettings = new MySettings { Name = "Mr Ginnivan" };
     settingsProvider.Save(mySettings);
 
