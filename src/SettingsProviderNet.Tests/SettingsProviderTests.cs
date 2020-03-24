@@ -327,9 +327,9 @@ namespace SettingsProviderNet.Tests
     public void CanReadSettings()
     {
       var config = new StorageConfigBuilder()
-        .FileName("test.json")
-        .SetAppName("test")
-        .SetFolder(Environment.SpecialFolder.ApplicationData)
+        .FileName("Test.json")
+        .SetAppName("TestApp")
+        .SetFolder(Environment.SpecialFolder.LocalApplicationData)
         .CreateIfNotExist(true)
         .Build();
       var path = config.GetPath();
