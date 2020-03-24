@@ -7,9 +7,9 @@ namespace SettingsProviderNet
   /// Necessarily you should specify AppName xor SpecifyPathToConfigFile.
   /// Optionally you might set SpecialFolder, FileName, etc.
   /// </summary>
-  public class StorageOptionsBuilder
+  public class StorageConfigBuilder
   {
-    public StorageOptionsBuilder SpecifyPathToConfigFile(string path)
+    public StorageConfigBuilder SpecifyPathToConfigFile(string path)
     {
       if (string.IsNullOrEmpty(path))
         throw new ArgumentException(nameof(path));
@@ -32,7 +32,7 @@ namespace SettingsProviderNet
       return this;
     }
 
-    public StorageOptionsBuilder SetFolder(Environment.SpecialFolder specialFolder)
+    public StorageConfigBuilder SetFolder(Environment.SpecialFolder specialFolder)
     {
       if (_config.PathToTargetFile != null)
         throw new InvalidOperationException("Target file already specified");
@@ -41,7 +41,7 @@ namespace SettingsProviderNet
       return this;
     }
 
-    public StorageOptionsBuilder SetAppName(string appName)
+    public StorageConfigBuilder SetAppName(string appName)
     {
       if (_config.PathToTargetFile != null)
         throw new InvalidOperationException("Target file already specified");
@@ -50,7 +50,7 @@ namespace SettingsProviderNet
       return this;
     }
 
-    public StorageOptionsBuilder FileName(string fileName)
+    public StorageConfigBuilder FileName(string fileName)
     {
       if (_config.PathToTargetFile != null)
         throw new InvalidOperationException("Target file already specified");
@@ -62,7 +62,7 @@ namespace SettingsProviderNet
     /// <summary>
     /// Automaticaly settings file creation if not exist
     /// </summary>
-    public StorageOptionsBuilder CreateIfNotExist(bool value)
+    public StorageConfigBuilder CreateIfNotExist(bool value)
     {
       _config.CreateIfNotExist = value;
       return this;

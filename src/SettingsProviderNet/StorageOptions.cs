@@ -9,7 +9,7 @@ namespace SettingsProviderNet
   {
     internal StorageOptions() { }
 
-    public static StorageOptionsBuilder Create() => new StorageOptionsBuilder();
+    public static StorageConfigBuilder Create() => new StorageConfigBuilder();
 
     public bool CreateIfNotExist { get; internal set; }
 

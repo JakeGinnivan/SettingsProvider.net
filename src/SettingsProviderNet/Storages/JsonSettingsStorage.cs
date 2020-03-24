@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace SettingsProviderNet.Storages
 {
-  public class JsonSettingsStorage : ISettingsStorage2
+  public class JsonSettingsStorage : ISettingsStorage
   {
     static JsonSettingsStorage()
     {

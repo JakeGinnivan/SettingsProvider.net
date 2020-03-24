@@ -18,7 +18,21 @@ namespace SettingsProviderNet
       DisplayName = property.Name;
       Key = property.Name;
 
-      ReadAttribute<DefaultValueAttribute>(d => DefaultValue = d.Value);
+      ReadAttribute<DefaultValueAttribute>(d =>
+      {
+        //TODO extract to another way 
+        if (property.PropertyType == typeof(TimeSpan))
+        {
+          if (!TimeSpan.TryParseExact((string)d.Value, Consts.TimeSpanFormat, System.Globalization.CultureInfo.InvariantCulture, out var result))
+          {
+            throw new FormatException($"Invalid default value '{d.Value}' for property '{property.Name}'. " +
+             $"Expected format like 'h:mm:ss.fff'");
+          }
+          DefaultValue = result;
+        }
+        else
+          DefaultValue = d.Value;
+      });
       ReadAttribute<DescriptionAttribute>(d => Description = d.Description);
       ReadAttribute<DisplayNameAttribute>(d => DisplayName = d.DisplayName);
       ReadAttribute<DataMemberAttribute>(d => Key = d.Name);

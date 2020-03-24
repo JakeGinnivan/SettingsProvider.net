@@ -13,7 +13,7 @@ namespace SettingsProviderNet
 
   public class SettingsProvider : ISettingsProvider
   {
-    public SettingsProvider(ISettingsStorage2 storage, string secretKey = null)
+    public SettingsProvider(ISettingsStorage storage, string secretKey = null)
     {
       this._storage = storage;
       this._secretKey = secretKey;
@@ -25,7 +25,7 @@ namespace SettingsProviderNet
       if (!fresh && _cache.ContainsKey(type))
         return (T)_cache[type];
 
-      bool isFileNotExist = _storage.TryLoad(out var settingsLookup);
+      bool isFileExist = _storage.TryLoad(out var settingsLookup);
       var settings = new T();
       var settingMetadata = ReadSettingMetadata<T>();
 
@@ -46,7 +46,7 @@ namespace SettingsProviderNet
 
       _cache[typeof(T)] = settings;
 
-      if (isFileNotExist && _storage.Config.CreateIfNotExist)
+      if (!isFileExist && _storage.Config.CreateIfNotExist)
         SaveSettings<T>(settings);
 
       return settings;
@@ -66,11 +66,19 @@ namespace SettingsProviderNet
     {
       var propertyType = setting.Property.PropertyType;
       var isList = IsList(propertyType);
-      if (isList && string.IsNullOrEmpty(storedValue)) return CreateListInstance(propertyType);
-      if (string.IsNullOrEmpty(storedValue)) return GetDefault(propertyType);
-      if (setting.UnderlyingType.IsEnum) return Enum.Parse(setting.UnderlyingType, storedValue);
+
+      if (isList && string.IsNullOrEmpty(storedValue))
+        return CreateListInstance(propertyType);
+
+      if (string.IsNullOrEmpty(storedValue))
+        return GetDefault(propertyType);
+
+      if (setting.UnderlyingType.IsEnum)
+        return Enum.Parse(setting.UnderlyingType, storedValue);
+
       if (!string.IsNullOrEmpty(storedValue) && setting.UnderlyingType == typeof(string) && !storedValue.StartsWith("\""))
         storedValue = string.Format("\"{0}\"", storedValue);
+
       if (setting.UnderlyingType == typeof(bool))
         storedValue = storedValue.ToLower();
 
@@ -116,6 +124,10 @@ namespace SettingsProviderNet
             value = EnumHelper.GetValues(setting.UnderlyingType).First();
 
           settings[setting.Key] = value.ToString();
+        }
+        if (setting.UnderlyingType == typeof(TimeSpan))
+        {
+          settings[setting.Key] = ((TimeSpan)value).ToString(Consts.TimeSpanFormat);
         }
         else if (value != null)
         {
@@ -176,7 +188,7 @@ namespace SettingsProviderNet
       return GetSettings<T>();
     }
 
-    readonly ISettingsStorage2 _storage;
+    readonly ISettingsStorage _storage;
     readonly Dictionary<Type, object> _cache = new Dictionary<Type, object>();
     readonly string _secretKey;
   }

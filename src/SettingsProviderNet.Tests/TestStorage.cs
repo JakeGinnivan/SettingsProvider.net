@@ -2,7 +2,7 @@
 
 namespace SettingsProviderNet.Tests
 {
-  public class TestStorage : ISettingsStorage2
+  public class TestStorage : ISettingsStorage
   {
     private Dictionary<string, string> _settings = new Dictionary<string, string>();
 

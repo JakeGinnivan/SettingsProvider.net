@@ -1,10 +1,14 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace SettingsProviderNet
 {
   public interface ISettingsStorage
   {
-    void Save(string key, Dictionary<string, string> settings);
-    IReadOnlyDictionary<string, string> Load(string key);
+    void Configure(StorageOptions config);
+    void Save(Dictionary<string, string> settings);
+    bool TryLoad(out IReadOnlyDictionary<string, string> values);
+    StorageOptions Config { get; }
   }
 }

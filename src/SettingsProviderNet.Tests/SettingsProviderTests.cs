@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace SettingsProviderNet.Tests
   {
     readonly SettingsProvider settingsRetreiver;
     readonly SettingsProvider settingsSaver;
-    readonly ISettingsStorage2 store;
+    readonly ISettingsStorage store;
 
     public SettingsProviderTests()
     {
@@ -320,6 +321,26 @@ namespace SettingsProviderNet.Tests
 
       // assert
       Assert.Equal("test", settings.ProtectedStringWithDefault);
+    }
+
+    [Fact]
+    public void CanReadSettings()
+    {
+      var config = new StorageConfigBuilder()
+        .FileName("test.json")
+        .SetAppName("test")
+        .SetFolder(Environment.SpecialFolder.ApplicationData)
+        .CreateIfNotExist(true)
+        .Build();
+      var path = config.GetPath();
+
+      if (File.Exists(path))
+        File.Delete(path);
+      var storage = new Storages.JsonSettingsStorage();
+      storage.Configure(config);
+
+      var provider = new SettingsProvider(storage);
+      var mySettings = provider.GetSettings<TestSettings>();
     }
   }
 }

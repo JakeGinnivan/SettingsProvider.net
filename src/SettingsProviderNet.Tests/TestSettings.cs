@@ -7,6 +7,9 @@ namespace SettingsProviderNet.Tests
 {
   public class TestSettings
   {
+    [DefaultValue("00:30:07.000")]
+    public TimeSpan Timeout { get; set; }
+
     [DefaultValue("foo")]
     public string TestProp1 { get; set; }
 
