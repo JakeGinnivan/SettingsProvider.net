@@ -28,9 +28,18 @@ Start of by creating your settings class, marking up with metadata
 
 ### Reading Settings
 
-    var settingsProvider = new SettingsProvider(); //By default uses IsolatedStorage for storage
-    var mySettings = settingsProvider.GetSettings<MySettings>();
-    Assert.True(mySettings.RememberMe); 
+      var config = new StorageConfigBuilder()
+        .FileName("Test.json")
+        .SetAppName("TestApp")
+        .SetFolder(Environment.SpecialFolder.LocalApplicationData)
+        .CreateIfNotExist(true)
+        .Build();
+
+      var storage = new Storages.JsonSettingsStorage();
+      storage.Configure(config);
+
+      var provider = new SettingsProvider(storage);
+      var mySettings = provider.GetSettings<TestSettings>();
 
 ### Saving Settings
 
