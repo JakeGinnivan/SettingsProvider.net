@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SettingsProviderNet\SettingsStorage.csproj" />
+    <ProjectReference Include="..\SettingsProviderNet\SimpleSettingsStorage.csproj" />
   </ItemGroup>
 
 </Project>

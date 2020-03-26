@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SettingsStorage", "SettingsProviderNet\SettingsStorage.csproj", "{92D3BF5A-F0B8-48F4-B454-23759986887A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSettingsStorage", "SettingsProviderNet\SimpleSettingsStorage.csproj", "{92D3BF5A-F0B8-48F4-B454-23759986887A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SettingsStorage.Tests", "SettingsProviderNet.Tests\SettingsStorage.Tests.csproj", "{9E51839E-B25B-4102-81D6-C4463159BB50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSettingsStorage.Tests", "SettingsProviderNet.Tests\SimpleSettingsStorage.Tests.csproj", "{9E51839E-B25B-4102-81D6-C4463159BB50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
