@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SimpleSettingsStorage.Tests
+namespace SettingsProviderNet.Tests
 {
   public class TestStorage : ISettingsStorage
   {

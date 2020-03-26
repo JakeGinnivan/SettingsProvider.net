@@ -1,4 +1,4 @@
-using SimpleSettingsStorage.Storages;
+using SettingsProviderNet.Storages;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
-namespace SimpleSettingsStorage
+namespace SettingsProviderNet
 {
   // ReSharper disable InconsistentNaming
 

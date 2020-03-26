@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace SimpleSettingsStorage.Tests
+namespace SettingsProviderNet.Tests
 {
   public class TestSettings
   {

@@ -6,14 +6,14 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-
-namespace SimpleSettingsStorage.Tests
+namespace SettingsProviderNet.Tests
 {
   public class SettingsProviderTests
   {
     readonly SettingsProvider settingsRetreiver;
     readonly SettingsProvider settingsSaver;
     readonly ISettingsStorage store;
+
     public SettingsProviderTests()
     {
       store = new TestStorage();

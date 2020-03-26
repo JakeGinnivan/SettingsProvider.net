@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimpleSettingsStorage
+namespace SettingsProviderNet
 {
   public interface ISettingsStorage
   {

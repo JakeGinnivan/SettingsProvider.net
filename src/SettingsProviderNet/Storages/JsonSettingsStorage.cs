@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace SimpleSettingsStorage.Storages
+namespace SettingsProviderNet.Storages
 {
   public class JsonSettingsStorage : ISettingsStorage
   {

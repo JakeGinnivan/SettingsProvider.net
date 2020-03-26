@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace SimpleSettingsStorage
+namespace SettingsProviderNet
 {
   public class SettingDescriptor : INotifyPropertyChanged, ISettingDescriptor
   {

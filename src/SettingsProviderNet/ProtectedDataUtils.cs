@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SimpleSettingsStorage
+namespace SettingsProviderNet
 {
   internal class ProtectedDataUtils
   {

@@ -1,6 +1,6 @@
 using System;
 
-namespace SimpleSettingsStorage
+namespace SettingsProviderNet
 {
   public class KeyAttribute : Attribute
   {

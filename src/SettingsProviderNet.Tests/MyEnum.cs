@@ -1,4 +1,4 @@
-﻿namespace SimpleSettingsStorage.Tests
+﻿namespace SettingsProviderNet.Tests
 {
     public enum MyEnum
     {
