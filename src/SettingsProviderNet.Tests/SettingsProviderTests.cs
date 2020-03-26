@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-namespace SettingsProviderNet.Tests
+namespace SimpleSettingsStorage.Tests
 {
   public class SettingsProviderTests : IDisposable
   {

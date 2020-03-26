@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SettingsProviderNet
+namespace SimpleSettingsStorage
 {
   public class StorageConfig
   {

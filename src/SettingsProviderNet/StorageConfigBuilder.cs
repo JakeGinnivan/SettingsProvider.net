@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SettingsProviderNet
+namespace SimpleSettingsStorage
 {
   /// <summary> 
   /// Necessarily you should specify AppName xor SpecifyPathToConfigFile.
