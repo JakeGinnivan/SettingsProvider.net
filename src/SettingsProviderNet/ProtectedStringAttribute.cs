@@ -1,6 +1,6 @@
 using System;
 
-namespace SettingsProviderNet
+namespace SimpleSettingsStorage
 {
   [AttributeUsage(AttributeTargets.Property)]
   public class ProtectedStringAttribute : Attribute

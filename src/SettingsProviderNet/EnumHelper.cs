@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SettingsProviderNet
+namespace SimpleSettingsStorage
 {
   public static class EnumHelper
   {

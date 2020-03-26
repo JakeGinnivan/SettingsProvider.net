@@ -13,6 +13,8 @@
     <Company>community</Company>
     <Product>SettingsStorage</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyName>SimpleSettingsStorage</AssemblyName>
+    <RootNamespace>SimpleSettingsStorage</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

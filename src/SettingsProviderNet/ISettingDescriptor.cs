@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace SettingsProviderNet
+namespace SimpleSettingsStorage
 {
   public interface ISettingDescriptor
   {
