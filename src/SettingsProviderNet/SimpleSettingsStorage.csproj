@@ -11,7 +11,7 @@
     <PackageId>SimpleSettingsStorage</PackageId>
     <Authors>SettingsProviderNet &amp; stepagrus</Authors>
     <Company>community</Company>
-    <Product>SettingsStorage</Product>
+    <Product>SimpleSettingsStorage</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
