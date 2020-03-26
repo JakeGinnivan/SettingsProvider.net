@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -8,18 +9,27 @@ using Xunit;
 
 namespace SettingsProviderNet.Tests
 {
-  public class SettingsProviderTests
+  public class SettingsProviderTests : IDisposable
   {
     readonly SettingsProvider settingsRetreiver;
     readonly SettingsProvider settingsSaver;
     readonly ISettingsStorage store;
+    readonly StorageConfig storageConfig = new StorageConfigBuilder()
+      .SpecifyPathToConfigFile(@".\test.json")
+      .CreateIfNotExist(true)
+      .Build();
 
     public SettingsProviderTests()
     {
-      store = new TestStorage();
-      store.Configure(StorageConfig.Create().SetAppName("test").Build());
+      store = new Storages.JsonSettingsStorage();
+      store.Configure(storageConfig);
       settingsRetreiver = new SettingsProvider(store);
       settingsSaver = new SettingsProvider(store);
+    }
+
+    public void Dispose()
+    {
+      File.Delete(storageConfig.GetPath());
     }
 
     [Fact]
@@ -324,12 +334,10 @@ namespace SettingsProviderNet.Tests
     }
 
     [Fact]
-    public void CanReadSettings()
+    public void CanReadSettingsTest()
     {
       var config = new StorageConfigBuilder()
-        .FileName("Test.json")
-        .SetAppName("TestApp")
-        .SetFolder(Environment.SpecialFolder.LocalApplicationData)
+        .SpecifyPathToConfigFile($@".\{nameof(CanReadSettingsTest)}.json")
         .CreateIfNotExist(true)
         .Build();
       var path = config.GetPath();
