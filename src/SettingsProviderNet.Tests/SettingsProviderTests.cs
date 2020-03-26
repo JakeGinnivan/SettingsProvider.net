@@ -265,10 +265,10 @@ namespace SimpleSettingsStorage.Tests
     {
       store.Save(new Dictionary<string, string>
             {
-                {"SettingsProviderNet.Tests.TestSettings.TestProp1", "Value"},
-                {"SettingsProviderNet.Tests.TestSettings.SomeEnum", "Value2"},
-                {"SettingsProviderNet.Tests.TestSettings.TestProp2", "2"},
-                {"SettingsProviderNet.Tests.TestSettings.Boolean", "False"}
+                {$"SimpleSettingsStorage.Tests.TestSettings.TestProp1", "Value"},
+                {$"SimpleSettingsStorage.Tests.TestSettings.SomeEnum", "Value2"},
+                {$"SimpleSettingsStorage.Tests.TestSettings.TestProp2", "2"},
+                {$"SimpleSettingsStorage.Tests.TestSettings.Boolean", "False"}
             });
 
       var settings = settingsRetreiver.GetSettings<TestSettings>();
