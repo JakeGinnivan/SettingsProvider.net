@@ -3,6 +3,10 @@ The aim of settings provider is to quickly give you a simple way to store applic
 
 v2 Has added a few things to make versioning easier, the Key attribute allows you to rename properties, and types are no longer fully qualified (so you can move classes)
 
+## Nuget package
+
+https://www.nuget.org/packages/SimpleSettingsStorage/
+
 ## Usage
 
 Start of by creating your settings class, marking up with metadata
